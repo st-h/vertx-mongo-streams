@@ -15,14 +15,14 @@ Pull Requests are welcome.
 
 mvn:
 ```
- <groupId>com.github.sth</groupId>
+ <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
  <version>1.0.0</version>
 ```
  
 gradle:
 ```
-com.github.sth:vertx-mongo-streams:1.0.0
+com.github.st-h:vertx-mongo-streams:1.0.0
 ```
 
 ## Usage
