@@ -1,20 +1,4 @@
 <?xml version="1.0"?>
-<!--
-  ~ Copyright (c) 2011-2014 The original author or authors
-  ~
-  ~  All rights reserved. This program and the accompanying materials
-  ~  are made available under the terms of the Eclipse Public License v1.0
-  ~  and Apache License v2.0 which accompanies this distribution.
-  ~
-  ~      The Eclipse Public License is available at
-  ~      http://www.eclipse.org/legal/epl-v10.html
-  ~
-  ~      The Apache License v2.0 is available at
-  ~      http://www.opensource.org/licenses/apache2.0.php
-  ~
-  ~  You may elect to redistribute this code under either of these licenses.
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -31,6 +15,14 @@
     <version>1.0.0</version>
 
     <name>Vert.x - MongoDB streams for the async MongoDB driver</name>
+    <description>A stream helper to Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.</description>
+    <url>https://github.com/st-h/vertx-mongo-streams</url>
+
+    <scm>
+        <connection>scm:git:git@github.com/st-h/vertx-mongo-streams.git</connection>
+        <developerConnection>scm:git:git@github.com/st-h/vertx-mongo-streams.git</developerConnection>
+        <url>https://github.com/st-h/vertx-mongo-streams.git</url>
+    </scm>
 
     <properties>
         <mongodb.driver.version>3.3.0-SNAPSHOT</mongodb.driver.version>
@@ -54,6 +46,10 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <dependencies>
@@ -121,16 +117,6 @@
                     </dependencies>
                 </plugin>
 
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.plugin.version}</version>
-                    <configuration>
-                        <compilerArgument>-Xlint:all</compilerArgument>
-                    </configuration>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -163,15 +149,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>2.10.3</version>
+                <configuration>
+                    <sourcepath>src/main/java</sourcepath>
+                    <debug>true</debug>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -238,6 +220,20 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
