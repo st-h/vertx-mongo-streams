@@ -1,19 +1,3 @@
-/*
- * Copyright 2014 Red Hat, Inc.
- *
- * Red Hat licenses this file to you under the Apache License, version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License.  You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
-
 package com.github.sth.groovy.vertx.mongo.streams
 
 import com.mongodb.async.SingleResultCallback;
@@ -41,20 +25,20 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
   }
 
   @Override
-  public WriteStream<Buffer> exceptionHandler(Handler<Throwable> arg0) {
-    ((io.vertx.core.streams.WriteStream) delegate).exceptionHandler(arg0);
+  public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
+    ((io.vertx.core.streams.WriteStream) delegate).exceptionHandler(handler);
     return this;
   }
 
   @Override
-  public WriteStream<Buffer> write(Buffer arg0) {
-    ((io.vertx.core.streams.WriteStream) delegate).write(arg0 != null ? (io.vertx.core.buffer.Buffer)arg0.getDelegate() : null);
+  public WriteStream<Buffer> write(Buffer buffer) {
+    ((io.vertx.core.streams.WriteStream) delegate).write(buffer != null ? (io.vertx.core.buffer.Buffer)buffer.getDelegate() : null);
     return this;
   }
 
   @Override
-  public void end(Buffer t) {
-    ((io.vertx.core.streams.WriteStream) delegate).end(t != null ? (io.vertx.core.buffer.Buffer)t.getDelegate() : null);
+  public void end(Buffer buffer) {
+    ((io.vertx.core.streams.WriteStream) delegate).end(buffer != null ? (io.vertx.core.buffer.Buffer)buffer.getDelegate() : null);
   }
 
   @Override
@@ -64,8 +48,8 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
   }
 
   @Override
-  public WriteStream<Buffer> drainHandler(Handler<Void> arg0) {
-    ((io.vertx.core.streams.WriteStream) delegate).drainHandler(arg0);
+  public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
+    ((io.vertx.core.streams.WriteStream) delegate).drainHandler(handler);
     return this;
   }
 
@@ -74,9 +58,14 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
     ((io.vertx.core.streams.WriteStream) delegate).end();
   }
 
+  /**
+   * Sets the maximum internal buffer size.
+   * @param size the size.
+   * @return {@link com.github.sth.groovy.vertx.mongo.streams.GridFSInputStream}
+   */
   @Override
-  public GridFSInputStream setWriteQueueMaxSize(int i) {
-    ((io.vertx.core.streams.WriteStream) delegate).setWriteQueueMaxSize(i);
+  public GridFSInputStream setWriteQueueMaxSize(int size) {
+    ((io.vertx.core.streams.WriteStream) delegate).setWriteQueueMaxSize(size);
     return this;
   }
   /**

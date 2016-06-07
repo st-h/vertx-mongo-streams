@@ -5,18 +5,28 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
 /**
- * GridFSInputStream which bridges the gap between vertx's {@link io.vertx.core.streams.WriteStream}
+ * {@link GridFSInputStream} which bridges the gap between vertx's {@link io.vertx.core.streams.WriteStream}
  * and mongodb's {@link com.mongodb.async.client.gridfs.AsyncInputStream}.
  */
 public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer> {
+
+  /**
+   * Signals that all data has been consumed. After this method is called and the internal buffer
+   * has been written to the database, the driver will be signalled that all data has been processed.
+   */
   @Override
   void end();
 
+  /**
+   * Sets the maximum internal buffer size.
+   * @param size the size.
+   * @return {@link GridFSInputStream}
+   */
   @Override
-  GridFSInputStream setWriteQueueMaxSize(int i);
+  GridFSInputStream setWriteQueueMaxSize(int size);
 
   /**
-   * Create a GridFSInputStream
+   * Create a {@link GridFSInputStream}.
    *
    * @return the stream
    */
