@@ -8,6 +8,7 @@ Pull Requests are welcome.
 
 ## Prerequisites
 
+- Java 8
 - mongodb async driver >= 3.3.0
 - vert.x >= 3.0.0
 
@@ -27,7 +28,7 @@ com.github.st-h:vertx-mongo-streams:1.0.0
 
 ## Usage
 
-Just create a new instance using the `create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. 
+Just create a new instance using the `GridFSInputStream.create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. 
 The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
 
 ### java

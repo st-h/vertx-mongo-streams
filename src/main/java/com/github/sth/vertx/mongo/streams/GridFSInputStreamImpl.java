@@ -9,9 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-/**
- * @inheritDoc
- */
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
   private int writeQueueMaxSize = 8192;
@@ -24,22 +21,18 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
 
   boolean closed = false;
 
-  @Override
   public void read(ByteBuffer byteBuffer, SingleResultCallback<Integer> singleResultCallback) {
     this.writeBytes(byteBuffer, singleResultCallback);
   }
 
-  @Override
   public void close(SingleResultCallback<Void> singleResultCallback) {
     callback.onResult(null, null);
   }
 
-  @Override
   public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
     return this;
   }
 
-  @Override
   public WriteStream<Buffer> write(Buffer buffer) {
     for (byte b : buffer.getBytes()) {
       pending.add(b);
@@ -48,7 +41,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     return this;
   }
 
-  @Override
   public void end() {
     this.closed = true;
     // if there is no more data to write, call the callback immediately
@@ -59,18 +51,15 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     }
   }
 
-  @Override
   public GridFSInputStream setWriteQueueMaxSize(int i) {
     this.writeQueueMaxSize = i;
     return this;
   }
 
-  @Override
   public boolean writeQueueFull() {
     return pending.size() >= writeQueueMaxSize;
   }
 
-  @Override
   public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
     this.drainHandler = handler;
     return this;

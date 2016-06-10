@@ -4,12 +4,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-parent</artifactId>
-        <version>9</version>
-    </parent>
-
     <groupId>com.github.st-h</groupId>
     <artifactId>vertx-mongo-streams</artifactId>
     <version>1.0.0</version>
@@ -24,9 +18,26 @@
         <url>https://github.com/st-h/vertx-mongo-streams.git</url>
     </scm>
 
+    <licenses>
+        <license>
+            <name>WTFPL</name>
+            <url>http://www.wtfpl.net</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Steve Hummingbird</name>
+            <email>Steve.Hummingbird@yandex.com</email>
+        </developer>
+    </developers>
+
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <mongodb.driver.version>3.3.0-SNAPSHOT</mongodb.driver.version>
-        <stack.version>3.3.0-SNAPSHOT</stack.version>
+        <stack.version>3.2.1</stack.version>
     </properties>
 
     <dependencyManagement>
@@ -56,16 +67,13 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-lang-groovy</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-docgen</artifactId>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -119,13 +127,14 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven.surefire.plugin.version}</version>
-                    <configuration>
-                        <excludes>
-                            <exclude>**/HazelcastClusteredSessionHandlerTest.java</exclude>
-                        </excludes>
-                    </configuration>
+                    <version>2.18.1</version>
                 </plugin>
 
             </plugins>
@@ -150,14 +159,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
-                <configuration>
-                    <sourcepath>src/main/java</sourcepath>
-                    <debug>true</debug>
-                </configuration>
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <id>default-jar</id>
@@ -174,10 +181,6 @@
                                     <Maven-Version>${project.version}</Maven-Version>
                                 </manifestEntries>
                             </archive>
-                            <!-- Remove examples and docoverride -->
-                            <excludes>
-                                <exclude>/examples/**</exclude>
-                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -194,15 +197,6 @@
                         <goals>
                             <goal>manifest</goal>
                         </goals>
-                        <configuration>
-                            <instructions>
-                                <Export-Package>io.vertx.ext.web*</Export-Package>
-                                <Private-Package>!examples*</Private-Package>
-                                <Import-Package>
-                                    io.vertx.groovy.*;resolution:=optional, io.vertx.rxjava.*;resolution:=optional, *
-                                </Import-Package>
-                            </instructions>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -233,6 +227,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

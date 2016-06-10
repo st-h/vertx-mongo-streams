@@ -24,36 +24,30 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
     return delegate;
   }
 
-  @Override
   public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
     ((io.vertx.core.streams.WriteStream) delegate).exceptionHandler(handler);
     return this;
   }
 
-  @Override
   public WriteStream<Buffer> write(Buffer buffer) {
     ((io.vertx.core.streams.WriteStream) delegate).write(buffer != null ? (io.vertx.core.buffer.Buffer)buffer.getDelegate() : null);
     return this;
   }
 
-  @Override
   public void end(Buffer buffer) {
     ((io.vertx.core.streams.WriteStream) delegate).end(buffer != null ? (io.vertx.core.buffer.Buffer)buffer.getDelegate() : null);
   }
 
-  @Override
   public boolean writeQueueFull() {
     def ret = ((io.vertx.core.streams.WriteStream) delegate).writeQueueFull();
     return ret;
   }
 
-  @Override
   public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
     ((io.vertx.core.streams.WriteStream) delegate).drainHandler(handler);
     return this;
   }
 
-  @Override
   public void end() {
     ((io.vertx.core.streams.WriteStream) delegate).end();
   }
@@ -63,7 +57,6 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
    * @param size the size.
    * @return {@link com.github.sth.groovy.vertx.mongo.streams.GridFSInputStream}
    */
-  @Override
   public GridFSInputStream setWriteQueueMaxSize(int size) {
     ((io.vertx.core.streams.WriteStream) delegate).setWriteQueueMaxSize(size);
     return this;
@@ -78,12 +71,10 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
     return ret;
   }
 
-  @Override
   void read(ByteBuffer byteBuffer, SingleResultCallback<Integer> singleResultCallback) {
     ((AsyncInputStream) delegate).read(byteBuffer, singleResultCallback);
   }
 
-  @Override
   void close(SingleResultCallback<Void> singleResultCallback) {
     ((AsyncInputStream) delegate).close(singleResultCallback);
   }
