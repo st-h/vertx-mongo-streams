@@ -9,6 +9,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+/**
+ * <p>GridFSInputStreamImpl class.</p>
+ *
+ * @version $Id: $Id
+ */
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
   private int writeQueueMaxSize = 8192;

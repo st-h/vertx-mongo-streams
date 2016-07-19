@@ -5,8 +5,10 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
 /**
- * {@link GridFSInputStream} which bridges the gap between vertx's {@link io.vertx.core.streams.WriteStream}
+ * {@link com.github.sth.vertx.mongo.streams.GridFSInputStream} which bridges the gap between vertx's {@link io.vertx.core.streams.WriteStream}
  * and mongodb's {@link com.mongodb.async.client.gridfs.AsyncInputStream}.
+ *
+ * @version $Id: $Id
  */
 public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer> {
 
@@ -26,7 +28,7 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
   GridFSInputStream setWriteQueueMaxSize(int size);
 
   /**
-   * Create a {@link GridFSInputStream}.
+   * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
    *
    * @return the stream
    */
