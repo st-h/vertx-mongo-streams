@@ -1,14 +1,14 @@
 package com.github.sth.vertx.mongo.streams;
 
-import com.mongodb.async.SingleResultCallback;
-import io.vertx.core.Handler;
+import com.github.sth.vertx.mongo.streams.util.ByteUtil;
+import com.github.sth.vertx.mongo.streams.util.ResultCallback;
+import com.github.sth.vertx.mongo.streams.util.DrainHandler;
 import io.vertx.core.buffer.Buffer;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
 
 public class GridFSInputStreamTest {
 
@@ -20,8 +20,8 @@ public class GridFSInputStreamTest {
   public void happyPathReadAfterWrite() {
     GridFSInputStream inputStream = GridFSInputStream.create();
 
-    Buffer buffer1 = Buffer.buffer(randomBytes(2048));
-    Buffer buffer2 = Buffer.buffer(randomBytes(2048));
+    Buffer buffer1 = Buffer.buffer(ByteUtil.randomBytes(2048));
+    Buffer buffer2 = Buffer.buffer(ByteUtil.randomBytes(2048));
 
     // write data to the stream
     inputStream.write(buffer1);
@@ -57,8 +57,8 @@ public class GridFSInputStreamTest {
   public void happyPathReadBetweenWrites() {
     GridFSInputStream inputStream = GridFSInputStream.create();
 
-    Buffer buffer1 = Buffer.buffer(randomBytes(2048));
-    Buffer buffer2 = Buffer.buffer(randomBytes(2048));
+    Buffer buffer1 = Buffer.buffer(ByteUtil.randomBytes(2048));
+    Buffer buffer2 = Buffer.buffer(ByteUtil.randomBytes(2048));
 
     // write data to the stream
     inputStream.write(buffer1);
@@ -105,19 +105,19 @@ public class GridFSInputStreamTest {
     // empty queue should not be full
     Assert.assertFalse(inputStream.writeQueueFull());
 
-    Buffer buffer = Buffer.buffer(randomBytes(4096));
+    Buffer buffer = Buffer.buffer(ByteUtil.randomBytes(4096));
 
     // write data to the stream
     inputStream.write(buffer);
     Assert.assertFalse(inputStream.writeQueueFull());
 
     // write more data to the stream: 8191 < 8192
-    buffer = Buffer.buffer(randomBytes(4095));
+    buffer = Buffer.buffer(ByteUtil.randomBytes(4095));
     inputStream.write(buffer);
     Assert.assertFalse(inputStream.writeQueueFull());
 
     // queue should be full (8192 bytes in queue)
-    buffer = Buffer.buffer(randomBytes(1));
+    buffer = Buffer.buffer(ByteUtil.randomBytes(1));
     inputStream.write(buffer);
     Assert.assertTrue(inputStream.writeQueueFull());
   }
@@ -130,7 +130,7 @@ public class GridFSInputStreamTest {
   public void testDrainHandler() {
     GridFSInputStream inputStream = GridFSInputStream.create();
 
-    Buffer buffer = Buffer.buffer(randomBytes(8192));
+    Buffer buffer = Buffer.buffer(ByteUtil.randomBytes(8192));
 
     // write more data than the queue has capacity
     inputStream.write(buffer);
@@ -189,7 +189,7 @@ public class GridFSInputStreamTest {
 
     inputStream.setWriteQueueMaxSize(2);
 
-    Buffer buffer = Buffer.buffer(randomBytes(1));
+    Buffer buffer = Buffer.buffer(ByteUtil.randomBytes(1));
     inputStream.write(buffer);
 
     Assert.assertFalse(inputStream.writeQueueFull());
@@ -197,64 +197,5 @@ public class GridFSInputStreamTest {
     inputStream.write(buffer);
 
     Assert.assertTrue(inputStream.writeQueueFull());
-  }
-
-
-  /**
-   * Generate Random Bytes of specified length.
-   * @param length the number of bytes to create
-   * @return array of random bytes
-   */
-  private byte[] randomBytes(int length) {
-    byte[] b = new byte[length];
-    new Random().nextBytes(b);
-    return b;
-  }
-
-
-  /**
-   * A simple DrainHandler to use for tests.
-   */
-  private static class DrainHandler implements Handler<Void> {
-
-    boolean called;
-
-    public boolean wasCalled() {
-      return this.called;
-    }
-
-    @Override
-    public void handle(Void aVoid) {
-      this.called = true;
-    }
-  }
-
-
-  /**
-   * SingleResultCallback for synchronous use.
-   * @param <T> Type of result
-   */
-  private static class ResultCallback<T> implements SingleResultCallback<T> {
-
-    T result;
-    Throwable throwable;
-
-    @Override
-    public void onResult(T t, Throwable throwable) {
-      this.result = t;
-      this.throwable = throwable;
-    }
-
-    public T getResult() {
-      return this.result;
-    }
-
-    public Throwable getThrowable() {
-      return this.throwable;
-    }
-
-    public boolean succeeded() {
-      return this.result != null && this.throwable == null;
-    }
   }
 }
