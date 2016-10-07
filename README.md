@@ -1,6 +1,6 @@
 # GridFS stream helper for Vert.x 3.x and MongoDB async driver in Java and Groovy
 
-A stream helper to Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
+Helpers to stream data between vert.x ReadStream (e.g. HttpServerFileUpload), WriteStream (e.g. HttpServerResponse) and MongoDB AsyncInputStream and AsyncOutputStream.
 
 Pull Requests are welcome.
 
@@ -32,7 +32,12 @@ Just create a new instance using the `GridFSInputStream.create()` method and use
 The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
 
 ### java
-the java implementation is found in package `com.github.sth.vertx.mongo.streams`
+the java implementations are found in package `com.github.sth.vertx.mongo.streams`
+
+
+#### Upload
+
+The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
 
 This snippet creates a fully working http server that persists a file to GridFS: 
 
@@ -100,8 +105,22 @@ public class UploadVerticle extends AbstractVerticle {
   }
 }
 ```
+
+#### Download
+The GridFSOutputStream allows write to a vert.x WriteStream via the mongo drivers downloadToStream() method:
+
+```
+GridFSOutputStream outputStream = GridFSOutputStream.create(httpServerResponse)
+gridFS.downloadToStream(objectId, outputStream, (bytes, t) -> {
+    ...
+} as SingleResultCallback<Long>)
+```
+
 ### groovy
-the groovy implementation is found in package `com.github.sth.groovy.vertx.mongo.streams`
+the groovy implementations are found in package `com.github.sth.groovy.vertx.mongo.streams`
+
+#### Upload
+The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
 
 This snippet creates a fully working http server that persists a file to GridFS:
 
@@ -181,5 +200,14 @@ class UploadVerticle extends GroovyVerticle {
 }
 ```
 
+#### Download
+The GridFSOutputStream allows write to a vert.x WriteStream via the mongo drivers downloadToStream() method:
+
+```
+GridFSOutputStream outputStream = GridFSOutputStream.create(httpServerResponse)
+gridFS.downloadToStream(objectId, outputStream, { Long bytes, Throwable t ->
+    ...
+} as SingleResultCallback<Long>)
+```
 ---
 
