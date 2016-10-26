@@ -26,18 +26,15 @@ gradle:
 com.github.st-h:vertx-mongo-streams:1.0.1
 ```
 
-## Usage
-
-Just create a new instance using the `GridFSInputStream.create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. 
-The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
-
-### java
+## Java
 the java implementations are found in package `com.github.sth.vertx.mongo.streams`
 
 
-#### Upload
+### Upload
 
 The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
+
+Just create a new instance using the `GridFSInputStream.create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
 
 This snippet creates a fully working http server that persists a file to GridFS: 
 
@@ -106,21 +103,25 @@ public class UploadVerticle extends AbstractVerticle {
 }
 ```
 
-#### Download
+### Download
 The GridFSOutputStream allows write to a vert.x WriteStream via the mongo drivers downloadToStream() method:
 
 ```
 GridFSOutputStream outputStream = GridFSOutputStream.create(httpServerResponse)
-gridFS.downloadToStream(objectId, outputStream, (bytes, t) -> {
+gridFS.downloadToStream(objectId, outputStream, (bytesRead, t) -> {
+
     ...
+
 } as SingleResultCallback<Long>)
 ```
 
-### groovy
-the groovy implementations are found in package `com.github.sth.groovy.vertx.mongo.streams`
+## Groovy
+The groovy implementations are found in package `com.github.sth.groovy.vertx.mongo.streams`
 
-#### Upload
+### Upload
 The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
+
+Just create a new instance using the `GridFSInputStream.create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
 
 This snippet creates a fully working http server that persists a file to GridFS:
 
@@ -200,13 +201,15 @@ class UploadVerticle extends GroovyVerticle {
 }
 ```
 
-#### Download
+### Download
 The GridFSOutputStream allows write to a vert.x WriteStream via the mongo drivers downloadToStream() method:
 
-```
+```groovy
 GridFSOutputStream outputStream = GridFSOutputStream.create(httpServerResponse)
-gridFS.downloadToStream(objectId, outputStream, { Long bytes, Throwable t ->
+gridFS.downloadToStream(objectId, outputStream, { Long bytesRead, Throwable t ->
+
     ...
+
 } as SingleResultCallback<Long>)
 ```
 ---
