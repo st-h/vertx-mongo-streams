@@ -18,12 +18,12 @@ mvn:
 ```
  <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
- <version>1.0.1</version>
+ <version>1.1.0</version>
 ```
  
 gradle:
 ```
-com.github.st-h:vertx-mongo-streams:1.0.1
+com.github.st-h:vertx-mongo-streams:1.1.0
 ```
 
 ## Java
