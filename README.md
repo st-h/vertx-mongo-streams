@@ -112,7 +112,7 @@ gridFS.downloadToStream(objectId, outputStream, (bytesRead, t) -> {
 
     ...
 
-} as SingleResultCallback<Long>)
+})
 ```
 
 ## Groovy
