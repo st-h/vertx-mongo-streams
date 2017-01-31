@@ -1,14 +1,16 @@
 package com.github.sth.vertx.mongo.streams;
 
 import com.github.sth.vertx.mongo.streams.util.ByteUtil;
-import com.github.sth.vertx.mongo.streams.util.ResultCallback;
 import com.github.sth.vertx.mongo.streams.util.DrainHandler;
-import io.vertx.core.buffer.Buffer;
+import com.github.sth.vertx.mongo.streams.util.ResultCallback;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import io.vertx.core.buffer.Buffer;
 
 public class GridFSInputStreamTest {
 
@@ -46,7 +48,7 @@ public class GridFSInputStreamTest {
     inputStream.read(byteBuffer, resultCallback);
 
     Assert.assertTrue(resultCallback.succeeded());
-    Assert.assertEquals(-1, resultCallback.getResult(), 0);
+    Assert.assertEquals(0, resultCallback.getResult(), 0);
   }
 
 
@@ -91,7 +93,7 @@ public class GridFSInputStreamTest {
     inputStream.end();
 
     Assert.assertTrue(resultCallback.succeeded());
-    Assert.assertEquals(-1, resultCallback.getResult(), 0);
+    Assert.assertEquals(0, resultCallback.getResult(), 0);
   }
 
 
@@ -168,15 +170,16 @@ public class GridFSInputStreamTest {
     GridFSInputStream inputStream = GridFSInputStream.create();
 
     ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
-    ResultCallback<Integer> resultCallback = new ResultCallback<>();
-    inputStream.read(byteBuffer, resultCallback);
+    ResultCallback<Integer> resultCallback1 = new ResultCallback<>();
+    inputStream.read(byteBuffer, resultCallback1);
 
-    Assert.assertFalse(resultCallback.succeeded());
-    Assert.assertNull(resultCallback.getThrowable());
+    Assert.assertFalse(resultCallback1.succeeded());
+    Assert.assertNull(resultCallback1.getThrowable());
 
-    inputStream.read(byteBuffer, resultCallback);
-    Assert.assertFalse(resultCallback.succeeded());
-    Assert.assertEquals(RuntimeException.class, resultCallback.getThrowable().getClass());
+    ResultCallback<Integer> resultCallback2 = new ResultCallback<>();
+    inputStream.read(byteBuffer, resultCallback2);
+    Assert.assertFalse(resultCallback2.succeeded());
+    Assert.assertEquals(RuntimeException.class, resultCallback2.getThrowable().getClass());
   }
 
 
