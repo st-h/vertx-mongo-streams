@@ -20,8 +20,8 @@ public class GridFSOutputStreamImpl implements GridFSOutputStream {
     @Override
     public void write(ByteBuffer byteBuffer, SingleResultCallback<Integer> singleResultCallback) {
         //  Buffer does not expose the internal ByteBuffer hence this is the only way to correctly set position and limit
-        final ByteBuf byteBuf = Unpooled.wrappedBuffer(byteBuffer); //  There is no copy of the backing array
-        final Buffer buffer = Buffer.buffer(byteBuf); //  There is no copy of the backing array
+        final ByteBuf byteBuf = Unpooled.wrappedBuffer(byteBuffer);
+        final Buffer buffer = Buffer.buffer(byteBuf);
         writeStream.write(buffer);
         singleResultCallback.onResult(byteBuf.readableBytes(), null);
     }
