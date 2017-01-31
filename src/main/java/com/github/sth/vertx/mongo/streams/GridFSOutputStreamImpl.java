@@ -1,10 +1,13 @@
 package com.github.sth.vertx.mongo.streams;
 
 import com.mongodb.async.SingleResultCallback;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.streams.WriteStream;
 
 import java.nio.ByteBuffer;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.streams.WriteStream;
 
 public class GridFSOutputStreamImpl implements GridFSOutputStream {
 
@@ -16,13 +19,11 @@ public class GridFSOutputStreamImpl implements GridFSOutputStream {
 
     @Override
     public void write(ByteBuffer byteBuffer, SingleResultCallback<Integer> singleResultCallback) {
-
-        byte[] bytes = byteBuffer.array();
-        Buffer buffer = Buffer.buffer(bytes);
-
+        //  Buffer does not expose the internal ByteBuffer hence this is the only way to correctly set position and limit
+        final ByteBuf byteBuf = Unpooled.wrappedBuffer(byteBuffer); //  There is no copy of the backing array
+        final Buffer buffer = Buffer.buffer(byteBuf); //  There is no copy of the backing array
         writeStream.write(buffer);
-
-        singleResultCallback.onResult(bytes.length, null);
+        singleResultCallback.onResult(byteBuf.readableBytes(), null);
     }
 
     @Override

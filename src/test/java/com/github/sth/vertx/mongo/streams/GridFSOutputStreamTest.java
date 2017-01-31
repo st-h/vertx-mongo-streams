@@ -2,24 +2,29 @@ package com.github.sth.vertx.mongo.streams;
 
 import com.github.sth.vertx.mongo.streams.util.ByteUtil;
 import com.github.sth.vertx.mongo.streams.util.ResultCallback;
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.streams.WriteStream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.streams.WriteStream;
+
 public class GridFSOutputStreamTest {
 
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 1024 * 4;
+
     /**
-     * Test that bytes are written to the provided WriteStream correctly and the callback returns the excepted result.
+     * Test that bytes are written to the provided WriteStream correctly and the callback returns
+     * the excepted result.
      */
     @Test
     public void happyPathWrite() {
 
-        byte [] bytes = ByteUtil.randomBytes(2048);
+        byte[] bytes = ByteUtil.randomBytes(2048);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
         WriteStreamMock writeStreamMock = new WriteStreamMock();
@@ -29,6 +34,28 @@ public class GridFSOutputStreamTest {
 
         Assert.assertTrue(resultCallback.succeeded());
         Assert.assertEquals(2048, resultCallback.getResult(), 0);
+        Assert.assertTrue(Arrays.equals(writeStreamMock.buffer.getBytes(), bytes));
+    }
+
+    /**
+     * Test that bytes are written to the provided WriteStream correctly and the callback returns
+     * the excepted result.
+     */
+    @Test
+    public void happyPathWriteWithNotAlignedBuffer() {
+
+        byte[] bytes = "123456789ABCDEF".getBytes();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        ResultCallback<Integer> resultCallback = new ResultCallback<>();
+        WriteStreamMock writeStreamMock = new WriteStreamMock();
+        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStreamMock);
+
+        outputStream.write(byteBuffer, resultCallback);
+
+        Assert.assertTrue(resultCallback.succeeded());
+        Assert.assertEquals(bytes.length, resultCallback.getResult(), 0);
         Assert.assertTrue(Arrays.equals(writeStreamMock.buffer.getBytes(), bytes));
     }
 
