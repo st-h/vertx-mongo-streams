@@ -21,6 +21,7 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
 
   /**
    * Sets the maximum internal buffer size.
+   *
    * @param size the size.
    * @return {@link GridFSInputStream}
    */

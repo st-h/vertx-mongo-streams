@@ -20,12 +20,12 @@ mvn:
 ```
  <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
- <version>1.1.1</version>
+ <version>1.1.2</version>
 ```
  
 gradle:
 ```
-com.github.st-h:vertx-mongo-streams:1.1.1
+com.github.st-h:vertx-mongo-streams:1.1.2
 ```
 
 ## Java
@@ -214,5 +214,10 @@ gridFS.downloadToStream(objectId, outputStream, { Long bytesRead, Throwable t ->
 
 } as SingleResultCallback<Long>)
 ```
+
+## Acknowledgments
+
+Thanks to [antofar](https://github.com/antofar) for contributing an improved implementation of GridFSInputStream
+
 ---
 

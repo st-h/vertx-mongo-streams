@@ -57,6 +57,7 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
 
     /**
      * Sets the maximum internal buffer size.
+     *
      * @param size the size.
      * @return {@link com.github.sth.groovy.vertx.mongo.streams.GridFSInputStream}
      */
@@ -66,11 +67,24 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
     }
 
     /**
-     * Create a GridFSInputStream
+     * Create a GridFSInputStream.
+     *
      * @return the stream
      */
     public static GridFSInputStream create() {
         def ret = InternalHelper.safeCreate(com.github.sth.vertx.mongo.streams.GridFSInputStream.create(),
+                GridFSInputStream.class);
+        return ret;
+    }
+
+    /**
+    * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
+     *
+    * @param queueSize the initial queue size
+    * @return the stream
+    */
+    public static GridFSInputStream create(int queueSize) {
+        def ret = InternalHelper.safeCreate(com.github.sth.vertx.mongo.streams.GridFSInputStream.create(queueSize),
                 GridFSInputStream.class);
         return ret;
     }
