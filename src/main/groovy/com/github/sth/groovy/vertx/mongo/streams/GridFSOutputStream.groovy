@@ -12,7 +12,7 @@ import java.nio.ByteBuffer
 @CompileStatic
 class GridFSOutputStream implements AsyncOutputStream {
 
-    private final def com.github.sth.vertx.mongo.streams.GridFSOutputStream delegate;
+    private final com.github.sth.vertx.mongo.streams.GridFSOutputStream delegate;
 
     public GridFSOutputStream(Object delegate) {
         this.delegate = (com.github.sth.vertx.mongo.streams.GridFSOutputStream) delegate;

@@ -9,9 +9,9 @@ import io.netty.buffer.Unpooled;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
-public class GridFSOutputStreamImpl implements GridFSOutputStream {
+class GridFSOutputStreamImpl implements GridFSOutputStream {
 
-    WriteStream<Buffer> writeStream;
+    private final WriteStream<Buffer> writeStream;
 
     GridFSOutputStreamImpl(WriteStream<Buffer> writeStream) {
         this.writeStream = writeStream;

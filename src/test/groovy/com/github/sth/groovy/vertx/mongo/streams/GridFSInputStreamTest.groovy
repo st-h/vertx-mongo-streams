@@ -39,8 +39,8 @@ public class GridFSInputStreamTest {
     Assert.assertTrue(resultCallback.succeeded());
     Assert.assertEquals(4096, resultCallback.getResult(), 0);
 
-    Assert.assertTrue(Arrays.equals(buffer1.delegate.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 0, 2048)));
-    Assert.assertTrue(Arrays.equals(buffer2.delegate.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 2048, 4096)));
+    Assert.assertTrue(Arrays.equals(buffer1.getDelegate().getBytes(), Arrays.copyOfRange(byteBuffer.array(), 0, 2048)));
+    Assert.assertTrue(Arrays.equals(buffer2.getDelegate().getBytes(), Arrays.copyOfRange(byteBuffer.array(), 2048, 4096)));
 
     // on the next invocation the mongo driver should be signaled that no more data is available
     resultCallback = new ResultCallback<>();
@@ -72,7 +72,7 @@ public class GridFSInputStreamTest {
 
     Assert.assertTrue(resultCallback.succeeded());
     Assert.assertEquals(2048, resultCallback.getResult(), 0);
-    Assert.assertTrue(Arrays.equals(buffer1.delegate.getBytes(), Arrays.copyOf(byteBuffer.array(), 2048)));
+    Assert.assertTrue(Arrays.equals(buffer1.getDelegate().getBytes(), Arrays.copyOf(byteBuffer.array(), 2048)));
 
     // write data to the stream
     inputStream.write(buffer2);
@@ -82,7 +82,7 @@ public class GridFSInputStreamTest {
 
     Assert.assertTrue(resultCallback.succeeded());
     Assert.assertEquals(2048, resultCallback.getResult(), 0);
-    Assert.assertTrue(Arrays.equals(buffer1.delegate.getBytes(), Arrays.copyOf(byteBuffer.array(), 2048)));
+    Assert.assertTrue(Arrays.equals(buffer1.getDelegate().getBytes(), Arrays.copyOf(byteBuffer.array(), 2048)));
 
     // on the next invocation the mongo driver should be signaled that no more data is available
     resultCallback = new ResultCallback<>();
