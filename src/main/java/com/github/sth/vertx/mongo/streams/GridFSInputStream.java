@@ -39,6 +39,7 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
   /**
    * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
    *
+   * @param queueSize the initial queue size
    * @return the stream
    */
   static GridFSInputStream create(int queueSize) {

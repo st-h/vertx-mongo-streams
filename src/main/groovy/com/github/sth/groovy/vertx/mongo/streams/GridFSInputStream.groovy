@@ -17,7 +17,7 @@ import java.nio.ByteBuffer
 @CompileStatic
 public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream {
 
-    private final def com.github.sth.vertx.mongo.streams.GridFSInputStream delegate;
+    private final com.github.sth.vertx.mongo.streams.GridFSInputStream delegate;
 
     public GridFSInputStream(Object delegate) {
         this.delegate = (com.github.sth.vertx.mongo.streams.GridFSInputStream) delegate;

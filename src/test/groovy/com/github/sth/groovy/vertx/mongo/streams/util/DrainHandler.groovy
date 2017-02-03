@@ -1,4 +1,4 @@
-package com.github.sth.vertx.mongo.streams.util;
+package com.github.sth.groovy.vertx.mongo.streams.util;
 
 import io.vertx.core.Handler;
 

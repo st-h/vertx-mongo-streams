@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/st-h/vertx-mongo-streams.svg?branch=master)](https://travis-ci.org/st-h/vertx-mongo-streams)
-
+[![codecov](https://codecov.io/gh/st-h/vertx-mongo-streams/branch/master/graph/badge.svg)](https://codecov.io/gh/st-h/vertx-mongo-streams)
 # GridFS stream helper for Vert.x 3.x and MongoDB async driver in Java and Groovy
 
 Helpers to stream data between vert.x ReadStream (e.g. HttpServerFileUpload), WriteStream (e.g. HttpServerResponse) and MongoDB AsyncInputStream and AsyncOutputStream.

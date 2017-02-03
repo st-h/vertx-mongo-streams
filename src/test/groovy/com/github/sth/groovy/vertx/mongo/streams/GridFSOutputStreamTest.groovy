@@ -1,17 +1,16 @@
-package com.github.sth.vertx.mongo.streams;
+package com.github.sth.groovy.vertx.mongo.streams
 
-import com.github.sth.vertx.mongo.streams.util.ByteUtil;
-import com.github.sth.vertx.mongo.streams.util.ResultCallback;
-
+import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil;
+import com.github.sth.groovy.vertx.mongo.streams.util.ResultCallback;
+import io.vertx.groovy.core.streams.WriteStreamImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.nio.ByteBuffer
 
 import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
+import io.vertx.core.buffer.Buffer;
 
 public class GridFSOutputStreamTest {
 
@@ -28,7 +27,7 @@ public class GridFSOutputStreamTest {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
         WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStreamMock);
+        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
 
         outputStream.write(byteBuffer, resultCallback);
 
@@ -50,7 +49,7 @@ public class GridFSOutputStreamTest {
         byteBuffer.flip();
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
         WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStreamMock);
+        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
 
         outputStream.write(byteBuffer, resultCallback);
 
@@ -67,7 +66,7 @@ public class GridFSOutputStreamTest {
 
         ResultCallback<Void> resultCallback = new ResultCallback<>();
         WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStreamMock);
+        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
 
         outputStream.close(resultCallback);
 
