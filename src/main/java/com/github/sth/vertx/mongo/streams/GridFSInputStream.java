@@ -12,38 +12,42 @@ import io.vertx.core.streams.WriteStream;
  */
 public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer> {
 
-  /**
-   * Signals that all data has been consumed. After this method is called and the internal buffer
-   * has been written to the database, the driver will be signalled that all data has been processed.
-   */
-  @Override
-  void end();
+    /**
+     * Signals that all data has been consumed. After this method is called and the internal buffer
+     * has been written to the database, the driver will be signalled that all data has been processed.
+     */
+    @Override
+    void end();
 
-  /**
-   * Sets the maximum internal buffer size.
-   *
-   * @param size the size.
-   * @return {@link GridFSInputStream}
-   */
-  @Override
-  GridFSInputStream setWriteQueueMaxSize(int size);
+    /**
+     * Sets the maximum internal buffer size.
+     *
+     * @param size the size.
+     * @return {@link GridFSInputStream}
+     */
+    @Override
+    GridFSInputStream setWriteQueueMaxSize(int size);
 
-  /**
-   * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
-   *
-   * @return the stream
-   */
-  static GridFSInputStream create() {
-    return new GridFSInputStreamImpl();
-  }
+    /**
+     * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
+     *
+     * @return the stream
+     */
+    static GridFSInputStream create() {
+        return new GridFSInputStreamImpl();
+    }
 
-  /**
-   * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
-   *
-   * @param queueSize the initial queue size
-   * @return the stream
-   */
-  static GridFSInputStream create(int queueSize) {
-    return new GridFSInputStreamImpl(queueSize);
-  }
+    static GridFSInputStream createOld() {
+        return new GridFSInputStreamOldImpl();
+    }
+
+    /**
+     * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
+     *
+     * @param queueSize the initial queue size
+     * @return the stream
+     */
+    static GridFSInputStream create(int queueSize) {
+        return new GridFSInputStreamImpl(queueSize);
+    }
 }

@@ -54,6 +54,8 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     }
 
     private void doCallback(final ByteBuffer b, final SingleResultCallback<Integer> c) {
+        pendingCallback = null;
+        outputBuffer = null;
         final int bytesWritten = buffer.drainInto(b);
         c.onResult(bytesWritten, null);
         // if there is a drain handler and the buffer is less than half full, call the drain handler
@@ -61,8 +63,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
             drainHandler.handle(null);
             drainHandler = null;
         }
-        pendingCallback = null;
-        outputBuffer = null;
     }
 
     public WriteStream<Buffer> write(Buffer inputBuffer) {
