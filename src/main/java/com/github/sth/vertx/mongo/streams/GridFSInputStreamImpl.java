@@ -65,6 +65,7 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         }
     }
 
+
     public WriteStream<Buffer> write(Buffer inputBuffer) {
         if (closed) throw new IllegalStateException("Stream is closed");
         final byte[] bytes = inputBuffer.getBytes();
@@ -74,9 +75,9 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
                 int bytesWritten = writeOutput(wrapper);
                 if (bytesWritten > 0) doCallback(bytesWritten);
             }
+            // Drain content left in the input buffer
+            buffer.fillFrom(wrapper);
         }
-        // Drain content left in the input buffer
-        buffer.fillFrom(wrapper);
         return this;
     }
 
@@ -87,8 +88,11 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         if (remaining > 0) {
             // If more space left in the output buffer we directly drain the input buffer
             final int newBytesWritten = remaining > wrapper.capacity() ? wrapper.capacity() : remaining;
+            // Store current limit to restore it in case we don't drain then whole buffer
+            final int limit = wrapper.limit();
             wrapper.limit(newBytesWritten);
             outputBuffer.put(wrapper);
+            wrapper.limit(limit);
             bytesWritten += newBytesWritten;
         }
         return bytesWritten;
