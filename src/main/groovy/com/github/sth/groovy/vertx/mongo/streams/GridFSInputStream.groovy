@@ -77,12 +77,6 @@ public class GridFSInputStream implements WriteStream<Buffer>, AsyncInputStream 
         return ret;
     }
 
-    public static GridFSInputStream create2() {
-        def ret = InternalHelper.safeCreate(com.github.sth.vertx.mongo.streams.GridFSInputStream.createOld(),
-                GridFSInputStream.class);
-        return ret;
-    }
-
     /**
     * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
      *

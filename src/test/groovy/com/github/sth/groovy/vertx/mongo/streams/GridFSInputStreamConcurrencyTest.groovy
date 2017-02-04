@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A test to detect any race conditions or locking issues.
+ */
 public class GridFSInputStreamConcurrencyTest {
 
     private final static int BUFFER_SIZE = 2048;
@@ -16,16 +19,6 @@ public class GridFSInputStreamConcurrencyTest {
     @Test
     public void testReadAndWriteConcurrent() throws InterruptedException {
         com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream = com.github.sth.vertx.mongo.streams.GridFSInputStream.create();
-        runTest(inputStream)
-    }
-
-    @Test
-    public void testReadAndWriteConcurrentOld() throws InterruptedException {
-        com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream = com.github.sth.vertx.mongo.streams.GridFSInputStream.createOld();
-        runTest(inputStream)
-    }
-
-    void runTest(com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream) {
         List<Buffer> buffers = new ArrayList<>();
         for (int i = 0; i < BUFFER_COUNT; i++) {
             buffers.add(Buffer.buffer(ByteUtil.randomBytes(BUFFER_SIZE)));

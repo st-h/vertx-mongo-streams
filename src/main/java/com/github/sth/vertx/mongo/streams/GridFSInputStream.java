@@ -37,10 +37,6 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
         return new GridFSInputStreamImpl();
     }
 
-    static GridFSInputStream createOld() {
-        return new GridFSInputStreamOldImpl();
-    }
-
     /**
      * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
      *

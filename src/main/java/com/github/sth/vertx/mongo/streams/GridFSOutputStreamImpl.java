@@ -1,12 +1,13 @@
 package com.github.sth.vertx.mongo.streams;
 
 import com.mongodb.async.SingleResultCallback;
+
+import java.nio.ByteBuffer;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
-
-import java.nio.ByteBuffer;
 
 class GridFSOutputStreamImpl implements GridFSOutputStream {
 
