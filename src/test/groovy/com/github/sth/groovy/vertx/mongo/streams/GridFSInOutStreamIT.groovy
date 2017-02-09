@@ -31,7 +31,7 @@ class GridFSInOutStreamIT {
 
         Async async = context.async()
 
-        vertx.deployVerticle('groovy:' + IntegrationTestVerticle.class.getName(), ['http.port': port], { AsyncResult result ->
+        vertx.deployVerticle('groovy:' + IntegrationTestVerticle.class.getName(), [config: [port: port]], { AsyncResult result ->
 
             if (result.failed()) { result.cause().printStackTrace() }
 
@@ -68,7 +68,7 @@ class GridFSInOutStreamIT {
         Async async = context.async();
         String id = null
 
-        HttpClientRequest request = client.post(8080, 'localhost', '/', { HttpClientResponse response ->
+        HttpClientRequest request = client.post(port, 'localhost', '/', { HttpClientResponse response ->
 
             response.bodyHandler({ Buffer body ->
 
@@ -98,7 +98,7 @@ class GridFSInOutStreamIT {
 
         async = context.async()
 
-        client.get(8080, 'localhost', '/' +  id, { HttpClientResponse response ->
+        client.get(port, 'localhost', '/' +  id, { HttpClientResponse response ->
             response.bodyHandler({ Buffer body ->
                 context.assertTrue(Arrays.equals(((io.vertx.core.buffer.Buffer) body.delegate).bytes, bytes))
                 async.complete()

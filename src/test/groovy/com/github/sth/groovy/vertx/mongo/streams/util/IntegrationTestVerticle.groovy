@@ -82,7 +82,7 @@ public class IntegrationTestVerticle extends GroovyVerticle {
                 } as SingleResultCallback<Long>)
             }
 
-        }).listen(8080, { AsyncResult<HttpServer> result ->
+        }).listen((Integer) vertx.getOrCreateContext().config().get('port'), { AsyncResult<HttpServer> result ->
             if (result.succeeded()) {
                 future.complete()
             } else {
