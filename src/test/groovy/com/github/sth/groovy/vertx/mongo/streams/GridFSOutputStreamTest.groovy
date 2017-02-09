@@ -18,7 +18,7 @@ public class GridFSOutputStreamTest {
 
     /**
      * Test that bytes are written to the provided WriteStream correctly and the callback returns
-     * the excepted result.
+     * the expected result.
      */
     @Test
     public void happyPathWrite() {
@@ -38,7 +38,7 @@ public class GridFSOutputStreamTest {
 
     /**
      * Test that bytes are written to the provided WriteStream correctly and the callback returns
-     * the excepted result.
+     * the expected result.
      */
     @Test
     public void happyPathWriteWithNotAlignedBuffer() {
