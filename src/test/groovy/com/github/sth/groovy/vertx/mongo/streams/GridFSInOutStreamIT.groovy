@@ -53,9 +53,19 @@ class GridFSInOutStreamIT {
 
     @Test
     public void testUploadAndDownload(TestContext context) {
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 2)
+        uploadDownload(context, bytes)
+    }
+
+    @Test
+    public void testUploadAndDownloadLarge(TestContext context) {
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 16)
+        uploadDownload(context, bytes)
+    }
+
+    private void uploadDownload(TestContext context, byte[] bytes) {
         HttpClient client = vertx.createHttpClient();
         Async async = context.async();
-        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 8)
         String id = null
 
         HttpClientRequest request = client.post(8080, 'localhost', '/', { HttpClientResponse response ->
