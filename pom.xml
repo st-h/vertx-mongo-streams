@@ -6,7 +6,7 @@
 
     <groupId>com.github.st-h</groupId>
     <artifactId>vertx-mongo-streams</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <name>Vert.x - MongoDB streams for the async MongoDB driver</name>
     <description>A stream helper to Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.</description>
@@ -64,6 +64,11 @@
     </distributionManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
