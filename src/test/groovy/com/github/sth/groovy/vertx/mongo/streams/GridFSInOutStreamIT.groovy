@@ -59,7 +59,7 @@ class GridFSInOutStreamIT {
 
     @Test
     public void testUploadAndDownloadLarge(TestContext context) {
-        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 6)
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 7)
         uploadDownload(context, bytes)
     }
 
