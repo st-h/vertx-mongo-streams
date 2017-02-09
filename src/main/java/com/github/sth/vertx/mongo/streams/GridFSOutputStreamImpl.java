@@ -5,7 +5,7 @@ import com.mongodb.async.SingleResultCallback;
 import java.nio.ByteBuffer;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static io.netty.buffer.Unpooled.*;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
@@ -20,7 +20,7 @@ class GridFSOutputStreamImpl implements GridFSOutputStream {
     @Override
     public void write(ByteBuffer byteBuffer, SingleResultCallback<Integer> singleResultCallback) {
         //  Buffer does not expose the internal ByteBuffer hence this is the only way to correctly set position and limit
-        final ByteBuf byteBuf = Unpooled.wrappedBuffer(byteBuffer);
+        final ByteBuf byteBuf = wrappedBuffer(byteBuffer);
         final Buffer buffer = Buffer.buffer(byteBuf);
         writeStream.write(buffer);
         singleResultCallback.onResult(byteBuf.readableBytes(), null);
