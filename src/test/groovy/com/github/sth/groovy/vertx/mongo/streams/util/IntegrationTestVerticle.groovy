@@ -1,7 +1,9 @@
 package com.github.sth.groovy.vertx.mongo.streams.util
 
 import com.github.sth.groovy.vertx.mongo.streams.GridFSInputStream
+import com.github.sth.groovy.vertx.mongo.streams.GridFSOutputStream
 import com.mongodb.async.SingleResultCallback
+import com.mongodb.async.client.MongoClient
 import com.mongodb.async.client.MongoClients
 import com.mongodb.async.client.MongoDatabase
 import com.mongodb.async.client.gridfs.GridFSBucket
@@ -24,14 +26,18 @@ import org.bson.types.ObjectId
  * A simple verticle, which accepts multipart file upload and serves the uploaded files.
  */
 public class IntegrationTestVerticle extends GroovyVerticle {
+
     private HttpServer httpServer
+    private MongoClient mongoClient
 
     @Override
     public void start(Future<Void> future) {
 
         // setup GridFS
-        MongoDatabase db = MongoClients.create().getDatabase('test');
-        GridFSBucket gridFSBucket = GridFSBuckets.create(db, 'test-bucket');
+        mongoClient = MongoClients.create()
+
+        MongoDatabase db = mongoClient.getDatabase('test')
+        GridFSBucket gridFSBucket = GridFSBuckets.create(db, 'test-bucket')
 
         // setup the HttpServer
         httpServer = vertx.createHttpServer().requestHandler({ HttpServerRequest request ->
@@ -67,7 +73,7 @@ public class IntegrationTestVerticle extends GroovyVerticle {
                 HttpServerResponse response = request.response()
                 response.setChunked(true)
 
-                com.github.sth.groovy.vertx.mongo.streams.legacy.GridFSOutputStream outputStream = com.github.sth.groovy.vertx.mongo.streams.legacy.GridFSOutputStream.create(response)
+                GridFSOutputStream outputStream = GridFSOutputStream.create(response)
                 gridFSBucket.downloadToStream(objectId, outputStream, { Long bytesRead, Throwable t ->
 
                     response.setStatusCode(200)
@@ -87,6 +93,7 @@ public class IntegrationTestVerticle extends GroovyVerticle {
 
     @Override
     public void stop(Future<Void> future) {
+        mongoClient.close()
         httpServer.close({
             AsyncResult<Void> result -> future.complete()
         } as Handler<AsyncResult<Void>>)
