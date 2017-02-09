@@ -1,7 +1,7 @@
 language: java
 jdk:
   - oraclejdk8
-script: mvn test cobertura:cobertura -B
+script: mvn verify cobertura:cobertura -B
 
 sudo: required
 
