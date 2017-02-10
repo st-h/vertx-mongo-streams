@@ -215,6 +215,14 @@ gridFS.downloadToStream(objectId, outputStream, { Long bytesRead, Throwable t ->
 } as SingleResultCallback<Long>)
 ```
 
+## Integration Test
+
+If you want to build this library yourself, the integration test requires a running mongodb on default port 27017. If you are using docker, you could just use the commands from `.travis.yml`:
+```
+docker pull mongo
+docker run -d -p 127.0.0.1:27017:27017 mongo
+```
+
 ## Acknowledgments
 
 Thanks to [antofar](https://github.com/antofar) for contributing an improved implementation of GridFSInputStream
