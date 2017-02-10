@@ -2,6 +2,8 @@ package com.github.sth.groovy.vertx.mongo.streams
 
 import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil
 import com.github.sth.groovy.vertx.mongo.streams.util.IntegrationTestVerticle
+import com.mongodb.async.SingleResultCallback
+import com.mongodb.async.client.MongoClients
 import io.vertx.core.AsyncResult
 import io.vertx.groovy.core.Vertx
 import io.vertx.groovy.core.buffer.Buffer
@@ -44,9 +46,13 @@ class GridFSInOutStreamIT {
 
     @After
     public void tearDown(TestContext context) {
-        Async async = context.async()
+        Async async = context.async(2)
+        MongoClients.create().getDatabase(IntegrationTestVerticle.DB_NAME).drop({ Void aVoid, Throwable t ->
+            async.countDown()
+        } as SingleResultCallback<Void>)
+
         vertx.close({ AsyncResult result ->
-            async.complete()
+            async.countDown()
         });
         async.awaitSuccess(10000)
     }
@@ -64,8 +70,8 @@ class GridFSInOutStreamIT {
     }
 
     private void uploadDownload(TestContext context, byte[] bytes) {
-        HttpClient client = vertx.createHttpClient();
-        Async async = context.async();
+        HttpClient client = vertx.createHttpClient()
+        Async async = context.async()
         String id = null
 
         HttpClientRequest request = client.post(port, 'localhost', '/', { HttpClientResponse response ->

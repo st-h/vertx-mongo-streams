@@ -30,13 +30,15 @@ public class IntegrationTestVerticle extends GroovyVerticle {
     private HttpServer httpServer
     private MongoClient mongoClient
 
+    public final static String DB_NAME = 'vertx-mongo-streams-integration-test'
+
     @Override
     public void start(Future<Void> future) {
 
         // setup GridFS
         mongoClient = MongoClients.create()
 
-        MongoDatabase db = mongoClient.getDatabase('test')
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME)
         GridFSBucket gridFSBucket = GridFSBuckets.create(db, 'test-bucket')
 
         // setup the HttpServer
