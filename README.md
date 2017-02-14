@@ -1,39 +1,36 @@
 [![Build Status](https://travis-ci.org/st-h/vertx-mongo-streams.svg?branch=master)](https://travis-ci.org/st-h/vertx-mongo-streams)
 [![codecov](https://codecov.io/gh/st-h/vertx-mongo-streams/branch/master/graph/badge.svg)](https://codecov.io/gh/st-h/vertx-mongo-streams)
 # GridFS stream helper for Vert.x 3.x and MongoDB async driver in Java and Groovy
-
 Helpers to stream data between vert.x ReadStream (e.g. HttpServerFileUpload), WriteStream (e.g. HttpServerResponse) and MongoDB AsyncInputStream and AsyncOutputStream.
 
 Pull Requests are welcome.
 
 ---
 
-## Prerequisites
-
+# Prerequisites
 - Java 8
 - mongodb async driver >= 3.3.0
 - vert.x >= 3.2.0
 
-## Install
-
+# Install
 mvn:
 ```
  <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
- <version>1.2.0</version>
+ <version>1.2.1</version>
 ```
  
 gradle:
 ```
-com.github.st-h:vertx-mongo-streams:1.2.0
+com.github.st-h:vertx-mongo-streams:1.2.1
 ```
 
-## Java
-the java implementations are found in package `com.github.sth.vertx.mongo.streams`
+# Usage
 
+## Java
+The java implementations are found in package `com.github.sth.vertx.mongo.streams`
 
 ### Upload
-
 The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
 
 Just create a new instance using the `GridFSInputStream.create()` method and use a `Pump` to transfer the data. Call the `end()` method when all data has been made available. The internal queue size can be changed using the `setWriteQueueMaxSize()` method.
@@ -215,15 +212,16 @@ gridFS.downloadToStream(objectId, outputStream, { Long bytesRead, Throwable t ->
 } as SingleResultCallback<Long>)
 ```
 
+# Build
 ## Integration Test
 
-If you want to build this library yourself, the integration test requires a running mongodb on default port 27017. If you are using docker, you could just use the commands from `.travis.yml`:
+If you want to build this library yourself, the integration test requires a running mongodb on default port 27017. If you are using docker, you could just use the commands from `.travis.yml` to launch a docker container running a mongo instance and expose the default port:
 ```
 docker pull mongo
 docker run -d -p 127.0.0.1:27017:27017 mongo
 ```
 
-## Acknowledgments
+# Acknowledgments
 
 Thanks to [antofar](https://github.com/antofar) for contributing an improved implementation of GridFSInputStream
 
