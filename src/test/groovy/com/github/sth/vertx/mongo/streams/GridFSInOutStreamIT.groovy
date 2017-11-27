@@ -1,18 +1,18 @@
-package com.github.sth.groovy.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams
 
-import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil
-import com.github.sth.groovy.vertx.mongo.streams.util.IntegrationTestVerticle
+import com.github.sth.vertx.mongo.streams.util.ByteUtil
+import com.github.sth.vertx.mongo.streams.util.IntegrationTestVerticle
 import com.mongodb.async.SingleResultCallback
 import com.mongodb.async.client.MongoClients
 import io.vertx.core.AsyncResult
-import io.vertx.groovy.core.Vertx
-import io.vertx.groovy.core.buffer.Buffer
-import io.vertx.groovy.core.http.HttpClient
-import io.vertx.groovy.core.http.HttpClientRequest
-import io.vertx.groovy.core.http.HttpClientResponse
-import io.vertx.groovy.ext.unit.Async
-import io.vertx.groovy.ext.unit.TestContext
-import io.vertx.groovy.ext.unit.junit.VertxUnitRunner
+import io.vertx.core.Vertx
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.http.HttpClient
+import io.vertx.core.http.HttpClientRequest
+import io.vertx.core.http.HttpClientResponse
+import io.vertx.ext.unit.Async
+import io.vertx.ext.unit.TestContext
+import io.vertx.ext.unit.junit.VertxUnitRunner
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -93,7 +93,7 @@ class GridFSInOutStreamIT {
         buffer.appendString("Content-Transfer-Encoding: binary\r\n");
         buffer.appendString("\r\n");
 
-        buffer.delegate.appendBytes(bytes);
+        buffer.appendBytes(bytes);
         buffer.appendString("\r\n");
 
         buffer.appendString("--MyBoundary--\r\n");
@@ -106,7 +106,7 @@ class GridFSInOutStreamIT {
 
         client.get(port, 'localhost', '/' +  id, { HttpClientResponse response ->
             response.bodyHandler({ Buffer body ->
-                context.assertTrue(Arrays.equals(((io.vertx.core.buffer.Buffer) body.delegate).bytes, bytes))
+                context.assertTrue(Arrays.equals(body.bytes, bytes))
                 async.complete()
             })
         }).end()

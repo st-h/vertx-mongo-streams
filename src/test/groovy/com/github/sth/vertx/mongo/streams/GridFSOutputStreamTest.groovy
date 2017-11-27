@@ -1,8 +1,7 @@
-package com.github.sth.groovy.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams
 
-import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil;
-import com.github.sth.groovy.vertx.mongo.streams.util.ResultCallback;
-import io.vertx.groovy.core.streams.WriteStreamImpl;
+import com.github.sth.vertx.mongo.streams.util.ByteUtil
+import com.github.sth.vertx.mongo.streams.util.ResultCallback;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,14 +25,14 @@ public class GridFSOutputStreamTest {
         byte[] bytes = ByteUtil.randomBytes(2048);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
-        WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
+        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
+        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStream);
 
         outputStream.write(byteBuffer, resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
         Assert.assertEquals(2048, resultCallback.getResult(), 0);
-        Assert.assertTrue(Arrays.equals(writeStreamMock.buffer.getBytes(), bytes));
+        Assert.assertTrue(Arrays.equals(writeStream.received[0].getBytes(), bytes));
     }
 
     /**
@@ -48,14 +47,14 @@ public class GridFSOutputStreamTest {
         byteBuffer.put(bytes);
         byteBuffer.flip();
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
-        WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
+        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
+        GridFSOutputStream outputStream = GridFSOutputStream.create(writeStream);
 
         outputStream.write(byteBuffer, resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
         Assert.assertEquals(bytes.length, resultCallback.getResult(), 0);
-        Assert.assertTrue(Arrays.equals(writeStreamMock.buffer.getBytes(), bytes));
+        Assert.assertTrue(Arrays.equals(writeStream.received[0].getBytes(), bytes));
     }
 
     /**
@@ -65,48 +64,55 @@ public class GridFSOutputStreamTest {
     public void happyPathClose() {
 
         ResultCallback<Void> resultCallback = new ResultCallback<>();
-        WriteStreamMock writeStreamMock = new WriteStreamMock();
-        GridFSOutputStream outputStream = GridFSOutputStream.create(new WriteStreamImpl<Buffer>(writeStreamMock));
+        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
+        GridFSOutputStream outputStream = GridFSOutputStream.create(new FakeWriteStream<Buffer>());
 
         outputStream.close(resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
-        Assert.assertNull(writeStreamMock.buffer);
+        Assert.assertNull(writeStream.received[0]);
     }
 
-    private static class WriteStreamMock implements WriteStream<Buffer> {
 
-        public Buffer buffer;
+    private class FakeWriteStream<T> implements WriteStream<T> {
 
-        @Override
-        public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
-            return null;
+        int maxSize;
+        List<T> received = new ArrayList<>();
+        Handler<Void> drainHandler;
+
+        void clearReceived() {
+            boolean callDrain = writeQueueFull();
+            received = new ArrayList<>();
+            if (callDrain && drainHandler != null) {
+                drainHandler.handle(null);
+            }
         }
 
-        @Override
-        public WriteStream<Buffer> write(Buffer buffer) {
-            this.buffer = buffer;
+        public FakeWriteStream setWriteQueueMaxSize(int maxSize) {
+            this.maxSize = maxSize;
+            return this;
+        }
+
+        public boolean writeQueueFull() {
+            return received.size() >= maxSize;
+        }
+
+        public FakeWriteStream drainHandler(Handler<Void> handler) {
+            this.drainHandler = handler;
+            return this;
+        }
+
+        public FakeWriteStream write(T data) {
+            received.add(data);
+            return this;
+        }
+
+        public WriteStream<T> exceptionHandler(Handler<Throwable> handler) {
             return this;
         }
 
         @Override
         public void end() {
-
-        }
-
-        @Override
-        public WriteStream<Buffer> setWriteQueueMaxSize(int i) {
-            return null;
-        }
-
-        @Override
-        public boolean writeQueueFull() {
-            return false;
-        }
-
-        @Override
-        public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
-            return null;
         }
     }
 }

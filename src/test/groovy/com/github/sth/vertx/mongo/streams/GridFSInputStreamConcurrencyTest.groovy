@@ -1,7 +1,7 @@
-package com.github.sth.groovy.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams
 
-import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil;
-import com.github.sth.groovy.vertx.mongo.streams.util.ResultCallback;
+import com.github.sth.vertx.mongo.streams.util.ByteUtil
+import com.github.sth.vertx.mongo.streams.util.ResultCallback;
 import io.vertx.core.buffer.Buffer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class GridFSInputStreamConcurrencyTest {
 
     @Test
     public void testReadAndWriteConcurrent() throws InterruptedException {
-        com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream = com.github.sth.vertx.mongo.streams.GridFSInputStream.create();
+        GridFSInputStream inputStream = GridFSInputStream.create();
         List<Buffer> buffers = new ArrayList<>();
         for (int i = 0; i < BUFFER_COUNT; i++) {
             buffers.add(Buffer.buffer(ByteUtil.randomBytes(BUFFER_SIZE)));
@@ -43,10 +43,10 @@ public class GridFSInputStreamConcurrencyTest {
 
     static class WriteThread extends Thread {
 
-        final com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream;
+        final GridFSInputStream inputStream;
         final List<Buffer> buffers;
 
-        WriteThread(com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream, List<Buffer> buffers) {
+        WriteThread(GridFSInputStream inputStream, List<Buffer> buffers) {
             this.inputStream = inputStream;
             this.buffers = buffers;
         }
@@ -62,9 +62,9 @@ public class GridFSInputStreamConcurrencyTest {
     static class ReadThread extends Thread {
 
         final ByteBuffer byteBuffer;
-        final com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream;
+        final GridFSInputStream inputStream;
 
-        ReadThread(com.github.sth.vertx.mongo.streams.GridFSInputStream inputStream, ByteBuffer byteBuffer) {
+        ReadThread(GridFSInputStream inputStream, ByteBuffer byteBuffer) {
             this.byteBuffer = byteBuffer;
             this.inputStream = inputStream;
         }

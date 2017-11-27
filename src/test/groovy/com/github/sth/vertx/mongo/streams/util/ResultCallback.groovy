@@ -1,4 +1,4 @@
-package com.github.sth.groovy.vertx.mongo.streams.util;
+package com.github.sth.vertx.mongo.streams.util;
 
 import com.mongodb.async.SingleResultCallback;
 
@@ -23,7 +23,7 @@ public class ResultCallback<T> implements SingleResultCallback<T> {
     }
 
     public T getResult() {
-        return this.result;
+        return (T) this.result;
     }
 
     public Throwable getThrowable() {
