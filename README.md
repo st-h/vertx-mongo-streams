@@ -12,7 +12,7 @@ Pull Requests are welcome.
 # Prerequisites
 - Java 8
 - mongodb async driver >= 3.3.0
-- vert.x >= 3.5.0
+- vert.x >= 3.4.0
 
 # Install
 mvn:
@@ -29,7 +29,7 @@ com.github.st-h:vertx-mongo-streams:1.3.0
 
 # Usage
 
-Since vert.x 3.5.0 usage within java and groovy is identical.
+Since vert.x 3.4.0 usage within java and groovy is identical.
 
 ### Upload
 The GridFSInputStream allows to directly Pump data from a vert.x ReadStream (e.g. HttpServerFileUpload) to MongoDB AsyncInputStream.
