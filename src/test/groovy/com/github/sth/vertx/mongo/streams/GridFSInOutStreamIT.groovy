@@ -126,9 +126,9 @@ class GridFSInOutStreamIT {
             response.bodyHandler({ Buffer body ->
                 byte[] downloaded = body.bytes
                 String downloadedMD5 = md5(downloaded)
-                context.assertEquals(downloadedMD5, serverMD5)
-                context.assertEquals(uploadedMD5, serverMD5)
-                context.assertTrue(Arrays.equals(downloaded, bytes))
+                context.assertEquals(downloadedMD5, serverMD5, 'downloaded file md5 does not match md5 calculated on server')
+                context.assertEquals(uploadedMD5, serverMD5, 'uploaded file md5 does not match md5 calculated on server')
+                context.assertTrue(Arrays.equals(downloaded, bytes), 'uploaded and download file content differs!')
                 async.complete()
             })
         }).end()
