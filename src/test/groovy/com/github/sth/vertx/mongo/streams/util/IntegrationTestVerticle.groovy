@@ -8,6 +8,9 @@ import com.mongodb.async.client.MongoClients
 import com.mongodb.async.client.MongoDatabase
 import com.mongodb.async.client.gridfs.GridFSBucket
 import com.mongodb.async.client.gridfs.GridFSBuckets
+import com.mongodb.client.gridfs.model.GridFSFile
+import com.mongodb.client.model.Filters
+import groovy.json.JsonBuilder
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future
@@ -61,9 +64,23 @@ public class IntegrationTestVerticle extends AbstractVerticle {
 
                     gridFSBucket.uploadFromStream(fileUpload.filename(), gridFSInputStream, { ObjectId id, Throwable t ->
                         if (t != null) {
+                            t.printStackTrace()
                             request.response().setStatusCode(500).end()
                         } else {
-                            request.response().end(id.toString());
+                            gridFSBucket.find(Filters.eq("_id", id)).first({ GridFSFile file, Throwable t2 ->
+                                if (t2 != null) {
+                                    t2.printStackTrace()
+                                    request.response().setStatusCode(500).end()
+                                } else {
+                                    System.out.println("uploaded file md5: " + file.MD5)
+                                    JsonBuilder builder = new JsonBuilder()
+                                    builder.call([
+                                            id: id.toString(),
+                                            md5: file.MD5
+                                    ])
+                                    request.response().end(builder.toString())
+                                }
+                            })
                         }
                     } as SingleResultCallback<ObjectId>);
                 })

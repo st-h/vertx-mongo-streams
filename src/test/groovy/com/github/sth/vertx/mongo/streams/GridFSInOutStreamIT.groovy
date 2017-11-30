@@ -10,6 +10,7 @@ import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClient
 import io.vertx.core.http.HttpClientRequest
 import io.vertx.core.http.HttpClientResponse
+import io.vertx.core.json.Json
 import io.vertx.ext.unit.Async
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
@@ -17,6 +18,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import javax.xml.bind.DatatypeConverter
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
 @RunWith(VertxUnitRunner.class)
 class GridFSInOutStreamIT {
@@ -69,16 +75,28 @@ class GridFSInOutStreamIT {
         uploadDownload(context, bytes)
     }
 
+    private String md5(byte[] bytes) {
+        MessageDigest md = MessageDigest.getInstance("MD5")
+        md.update(bytes)
+        return DatatypeConverter.printHexBinary(md.digest())
+    }
+
     private void uploadDownload(TestContext context, byte[] bytes) {
+
         HttpClient client = vertx.createHttpClient()
         Async async = context.async()
+        String uploadedMD5 = md5(bytes)
         String id = null
+        String serverMD5 = null
+
 
         HttpClientRequest request = client.post(port, 'localhost', '/', { HttpClientResponse response ->
 
             response.bodyHandler({ Buffer body ->
 
-                id = body.toString()
+                def resp = Json.decodeValue(body.toString(), Object.class)
+                id = resp.id
+                serverMD5 = resp.md5.toUpperCase()
                 context.assertNotNull(body)
                 async.complete()
             })
@@ -106,7 +124,11 @@ class GridFSInOutStreamIT {
 
         client.get(port, 'localhost', '/' +  id, { HttpClientResponse response ->
             response.bodyHandler({ Buffer body ->
-                context.assertTrue(Arrays.equals(body.bytes, bytes))
+                byte[] downloaded = body.bytes
+                String downloadedMD5 = md5(downloaded)
+                context.assertEquals(downloadedMD5, serverMD5)
+                context.assertEquals(uploadedMD5, serverMD5)
+                context.assertTrue(Arrays.equals(downloaded, bytes))
                 async.complete()
             })
         }).end()
