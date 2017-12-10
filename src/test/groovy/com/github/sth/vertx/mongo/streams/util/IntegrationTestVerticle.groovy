@@ -72,7 +72,6 @@ public class IntegrationTestVerticle extends AbstractVerticle {
                                     t2.printStackTrace()
                                     request.response().setStatusCode(500).end()
                                 } else {
-                                    System.out.println("uploaded file md5: " + file.MD5)
                                     JsonBuilder builder = new JsonBuilder()
                                     builder.call([
                                             id: id.toString(),

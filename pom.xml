@@ -37,17 +37,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <mongodb.driver.version>3.3.0</mongodb.driver.version>
-        <stack.version>3.5.1-SNAPSHOT</stack.version>
+        <stack.version>3.4.0</stack.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
