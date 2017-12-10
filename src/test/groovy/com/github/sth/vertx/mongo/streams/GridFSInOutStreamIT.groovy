@@ -1,22 +1,28 @@
-package com.github.sth.groovy.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams
 
-import com.github.sth.groovy.vertx.mongo.streams.util.ByteUtil
-import com.github.sth.groovy.vertx.mongo.streams.util.IntegrationTestVerticle
+import com.github.sth.vertx.mongo.streams.util.ByteUtil
+import com.github.sth.vertx.mongo.streams.util.IntegrationTestVerticle
 import com.mongodb.async.SingleResultCallback
 import com.mongodb.async.client.MongoClients
 import io.vertx.core.AsyncResult
-import io.vertx.groovy.core.Vertx
-import io.vertx.groovy.core.buffer.Buffer
-import io.vertx.groovy.core.http.HttpClient
-import io.vertx.groovy.core.http.HttpClientRequest
-import io.vertx.groovy.core.http.HttpClientResponse
-import io.vertx.groovy.ext.unit.Async
-import io.vertx.groovy.ext.unit.TestContext
-import io.vertx.groovy.ext.unit.junit.VertxUnitRunner
+import io.vertx.core.Vertx
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.http.HttpClient
+import io.vertx.core.http.HttpClientRequest
+import io.vertx.core.http.HttpClientResponse
+import io.vertx.core.json.Json
+import io.vertx.ext.unit.Async
+import io.vertx.ext.unit.TestContext
+import io.vertx.ext.unit.junit.VertxUnitRunner
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import javax.xml.bind.DatatypeConverter
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
 @RunWith(VertxUnitRunner.class)
 class GridFSInOutStreamIT {
@@ -65,20 +71,32 @@ class GridFSInOutStreamIT {
 
     @Test
     public void testUploadAndDownloadLarge(TestContext context) {
-        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 9)
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 17)
         uploadDownload(context, bytes)
     }
 
+    private String md5(byte[] bytes) {
+        MessageDigest md = MessageDigest.getInstance("MD5")
+        md.update(bytes)
+        return DatatypeConverter.printHexBinary(md.digest())
+    }
+
     private void uploadDownload(TestContext context, byte[] bytes) {
+
         HttpClient client = vertx.createHttpClient()
         Async async = context.async()
+        String uploadedMD5 = md5(bytes)
         String id = null
+        String serverMD5 = null
+
 
         HttpClientRequest request = client.post(port, 'localhost', '/', { HttpClientResponse response ->
 
             response.bodyHandler({ Buffer body ->
 
-                id = body.toString()
+                def resp = Json.decodeValue(body.toString(), Object.class)
+                id = resp.id
+                serverMD5 = resp.md5.toUpperCase()
                 context.assertNotNull(body)
                 async.complete()
             })
@@ -93,7 +111,7 @@ class GridFSInOutStreamIT {
         buffer.appendString("Content-Transfer-Encoding: binary\r\n");
         buffer.appendString("\r\n");
 
-        buffer.delegate.appendBytes(bytes);
+        buffer.appendBytes(bytes);
         buffer.appendString("\r\n");
 
         buffer.appendString("--MyBoundary--\r\n");
@@ -106,7 +124,11 @@ class GridFSInOutStreamIT {
 
         client.get(port, 'localhost', '/' +  id, { HttpClientResponse response ->
             response.bodyHandler({ Buffer body ->
-                context.assertTrue(Arrays.equals(((io.vertx.core.buffer.Buffer) body.delegate).bytes, bytes))
+                byte[] downloaded = body.bytes
+                String downloadedMD5 = md5(downloaded)
+                context.assertEquals(downloadedMD5, serverMD5, 'downloaded file md5 does not match md5 calculated on server')
+                context.assertEquals(uploadedMD5, serverMD5, 'uploaded file md5 does not match md5 calculated on server')
+                context.assertTrue(Arrays.equals(downloaded, bytes), 'uploaded and download file content differs!')
                 async.complete()
             })
         }).end()
