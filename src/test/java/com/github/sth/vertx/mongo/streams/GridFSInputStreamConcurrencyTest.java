@@ -1,12 +1,15 @@
-package com.github.sth.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams;
 
-import com.github.sth.vertx.mongo.streams.util.ByteUtil
 import com.github.sth.vertx.mongo.streams.util.ResultCallback;
 import io.vertx.core.buffer.Buffer;
 import org.junit.Assert;
 import org.junit.Test;
+import com.github.sth.vertx.mongo.streams.util.ByteUtil;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A test to detect any race conditions or locking issues.

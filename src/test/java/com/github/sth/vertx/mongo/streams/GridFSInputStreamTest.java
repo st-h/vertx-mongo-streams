@@ -1,13 +1,14 @@
-package com.github.sth.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams;
 
-import com.github.sth.vertx.mongo.streams.util.ByteUtil
-import com.github.sth.vertx.mongo.streams.util.DrainHandler
-import com.github.sth.vertx.mongo.streams.util.ResultCallback
-import io.vertx.core.buffer.Buffer
-import org.junit.Assert
-import org.junit.Test
+import com.github.sth.vertx.mongo.streams.util.ByteUtil;
+import com.github.sth.vertx.mongo.streams.util.DrainHandler;
+import com.github.sth.vertx.mongo.streams.util.ResultCallback;
+import io.vertx.core.buffer.Buffer;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.nio.ByteBuffer
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class GridFSInputStreamTest {
 

@@ -1,11 +1,14 @@
-package com.github.sth.vertx.mongo.streams
+package com.github.sth.vertx.mongo.streams;
 
-import com.github.sth.vertx.mongo.streams.util.ByteUtil
+import com.github.sth.vertx.mongo.streams.util.ByteUtil;
 import com.github.sth.vertx.mongo.streams.util.ResultCallback;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.ByteBuffer
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import io.vertx.core.Handler;
 import io.vertx.core.streams.WriteStream;
@@ -25,14 +28,14 @@ public class GridFSOutputStreamTest {
         byte[] bytes = ByteUtil.randomBytes(2048);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
-        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
+        FakeWriteStream<Buffer> writeStream = new FakeWriteStream<>();
         GridFSOutputStream outputStream = GridFSOutputStream.create(writeStream);
 
         outputStream.write(byteBuffer, resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
         Assert.assertEquals(2048, resultCallback.getResult(), 0);
-        Assert.assertTrue(Arrays.equals(writeStream.received[0].getBytes(), bytes));
+        Assert.assertTrue(Arrays.equals(writeStream.received.get(0).getBytes(), bytes));
     }
 
     /**
@@ -47,14 +50,14 @@ public class GridFSOutputStreamTest {
         byteBuffer.put(bytes);
         byteBuffer.flip();
         ResultCallback<Integer> resultCallback = new ResultCallback<>();
-        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
+        FakeWriteStream<Buffer> writeStream = new FakeWriteStream<>();
         GridFSOutputStream outputStream = GridFSOutputStream.create(writeStream);
 
         outputStream.write(byteBuffer, resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
         Assert.assertEquals(bytes.length, resultCallback.getResult(), 0);
-        Assert.assertTrue(Arrays.equals(writeStream.received[0].getBytes(), bytes));
+        Assert.assertTrue(Arrays.equals(writeStream.received.get(0).getBytes(), bytes));
     }
 
     /**
@@ -64,20 +67,20 @@ public class GridFSOutputStreamTest {
     public void happyPathClose() {
 
         ResultCallback<Void> resultCallback = new ResultCallback<>();
-        WriteStream<Buffer> writeStream = new FakeWriteStream<Buffer>()
-        GridFSOutputStream outputStream = GridFSOutputStream.create(new FakeWriteStream<Buffer>());
+        FakeWriteStream<Buffer> writeStream = new FakeWriteStream<>();
+        GridFSOutputStream outputStream = GridFSOutputStream.create(new FakeWriteStream<>());
 
         outputStream.close(resultCallback);
 
         Assert.assertTrue(resultCallback.succeeded());
-        Assert.assertNull(writeStream.received[0]);
+        Assert.assertEquals(0, writeStream.received.size());
     }
 
 
     private class FakeWriteStream<T> implements WriteStream<T> {
 
         int maxSize;
-        List<T> received = new ArrayList<>();
+        public List<T> received = new ArrayList<>();
         Handler<Void> drainHandler;
 
         void clearReceived() {
