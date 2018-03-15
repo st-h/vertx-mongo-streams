@@ -41,12 +41,8 @@ public class GridFSInOutStreamIT {
         port = socket.getLocalPort();
         socket.close();
 
-//        Async async = context.async();
-//
         DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
         vertx.deployVerticle(IntegrationTestVerticle.class.getName(), options, context.asyncAssertSuccess());
-
-//        async.awaitSuccess(10000);
     }
 
     @After
@@ -61,13 +57,13 @@ public class GridFSInOutStreamIT {
     }
 
     @Test
-    public void testUploadAndDownload(TestContext context) throws NoSuchAlgorithmException {
+    public void testUploadAndDownload(TestContext context) {
         byte[] bytes = ByteUtil.randomBytes(1024 * 1024);
         uploadDownload(context, bytes);
     }
 
     @Test
-    public void testUploadAndDownloadLarge(TestContext context) throws NoSuchAlgorithmException {
+    public void testUploadAndDownloadLarge(TestContext context) {
         byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 17);
         uploadDownload(context, bytes);
     }
@@ -86,8 +82,8 @@ public class GridFSInOutStreamIT {
 
         HttpClient client = vertx.createHttpClient();
         final Async uploadAsync = context.async();
-        String uploadedMD5 = md5(bytes);
-        System.out.println("client: md5 from bytes to be uploaded:\t" + uploadedMD5.toUpperCase());
+        final String uploadedMD5 = md5(bytes);
+
         final String[] id = {null};
         final String[] serverMD5 = {null};
 
@@ -99,8 +95,6 @@ public class GridFSInOutStreamIT {
                 id[0] = (String) resp.get("id");
                 serverMD5[0] = ((String) resp.get("md5")).toUpperCase();
                 context.assertNotNull(body);
-                System.out.println("server: bytes provided by WriteStream:\t" + resp.get("vertxMd5"));
-                System.out.println("server: upload md5 from gridFS file:\t" + ((String) resp.get("md5")).toUpperCase());
 
                 context.assertEquals(((String) resp.get("md5")).toUpperCase(), resp.get("vertxMd5"), "received bytes are incorrect");
                 uploadAsync.complete();

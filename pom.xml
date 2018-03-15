@@ -37,7 +37,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <mongodb.driver.version>3.3.0</mongodb.driver.version>
-        <stack.version>3.5.0-SNAPSHOT</stack.version>
+        <stack.version>3.5.1</stack.version>
     </properties>
 
     <repositories>
@@ -81,7 +81,6 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>3.5.0-fix-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

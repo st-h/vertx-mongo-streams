@@ -64,7 +64,7 @@ public class IntegrationTestVerticle extends AbstractVerticle {
                 request.uploadHandler((HttpServerFileUpload fileUpload) -> {
 
                     // create a GridFSInputStream
-                    GridFSInputStream gridFSInputStream = GridFSInputStream.create();
+                    GridFSInputStream gridFSInputStream = GridFSInputStream.create(vertx);
 
                     // when the upload has finished, notify the GridFSInputStream
                     fileUpload.endHandler((Void aVoid) -> gridFSInputStream.end());
@@ -105,7 +105,6 @@ public class IntegrationTestVerticle extends AbstractVerticle {
                         t2.printStackTrace();
                         request.response().setStatusCode(500).end();
                     } else {
-                        System.out.println("server: download gridFS file md5:\t" + file.getMD5());
                         GridFSOutputStream outputStream = GridFSOutputStream.create(response);
                         gridFSBucket.downloadToStream(objectId, outputStream, (Long bytesRead, Throwable t) -> {
                             response.setStatusCode(200);

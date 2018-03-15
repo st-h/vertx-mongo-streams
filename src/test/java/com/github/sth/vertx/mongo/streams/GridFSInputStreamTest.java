@@ -3,22 +3,34 @@ package com.github.sth.vertx.mongo.streams;
 import com.github.sth.vertx.mongo.streams.util.ByteUtil;
 import com.github.sth.vertx.mongo.streams.util.DrainHandler;
 import com.github.sth.vertx.mongo.streams.util.ResultCallback;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+@RunWith(VertxUnitRunner.class)
 public class GridFSInputStreamTest {
+
+    @Rule
+    public RunTestOnContext rule = new RunTestOnContext();
 
     /**
      * Test write all data before any data is consumed. The stream is ended before a new read callback has been
      * made available.
      */
     @Test
-    public void happyPathReadAfterWrite() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+    public void happyPathReadAfterWrite(TestContext context) {
+
+        GridFSInputStream inputStream = GridFSInputStream.create(rule.vertx());
 
         Buffer buffer1 = Buffer.buffer(ByteUtil.randomBytes(2048));
         Buffer buffer2 = Buffer.buffer(ByteUtil.randomBytes(2048));
@@ -35,18 +47,18 @@ public class GridFSInputStreamTest {
         // consume the stream
         inputStream.read(byteBuffer, resultCallback);
 
-        Assert.assertTrue(resultCallback.succeeded());
-        Assert.assertEquals(4096, resultCallback.getResult(), 0);
+        context.assertTrue(resultCallback.succeeded());
+        context.assertEquals(4096, resultCallback.getResult());
 
-        Assert.assertTrue(Arrays.equals(buffer1.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 0, 2048)));
-        Assert.assertTrue(Arrays.equals(buffer2.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 2048, 4096)));
+        context.assertTrue(Arrays.equals(buffer1.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 0, 2048)));
+        context.assertTrue(Arrays.equals(buffer2.getBytes(), Arrays.copyOfRange(byteBuffer.array(), 2048, 4096)));
 
         // on the next invocation the mongo driver should be signaled that no more data is available
         resultCallback = new ResultCallback<>();
         inputStream.read(byteBuffer, resultCallback);
 
-        Assert.assertTrue(resultCallback.succeeded());
-        Assert.assertEquals(0, resultCallback.getResult(), 0);
+        context.assertTrue(resultCallback.succeeded());
+        context.assertEquals(0, resultCallback.getResult());
     }
 
     /**
@@ -54,7 +66,7 @@ public class GridFSInputStreamTest {
      */
     @Test
     public void happyPathReadBetweenWrites() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+        GridFSInputStream inputStream = GridFSInputStream.create(rule.vertx());
 
         Buffer buffer1 = Buffer.buffer(ByteUtil.randomBytes(2048));
         Buffer buffer2 = Buffer.buffer(ByteUtil.randomBytes(2048));
@@ -98,7 +110,7 @@ public class GridFSInputStreamTest {
      */
     @Test
     public void testWriteQueueFull() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+        GridFSInputStream inputStream = GridFSInputStream.create(rule.vertx());
 
         // empty queue should not be full
         Assert.assertFalse(inputStream.writeQueueFull());
@@ -124,8 +136,10 @@ public class GridFSInputStreamTest {
      * Test that the drain handler is called when the queue is emptied to half its capacity.
      */
     @Test
-    public void testDrainHandler() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+    public void testDrainHandler(TestContext context) {
+        Async async = context.async();
+        Vertx vertx = rule.vertx();
+        GridFSInputStream inputStream = GridFSInputStream.create(vertx);
 
         Buffer buffer = Buffer.buffer(ByteUtil.randomBytes(8192));
 
@@ -151,9 +165,12 @@ public class GridFSInputStreamTest {
         inputStream.read(byteBuffer, resultCallback);
 
         // drain handler should be called
-        Assert.assertTrue(resultCallback.succeeded());
-        Assert.assertEquals(1, resultCallback.getResult(), 0);
-        Assert.assertTrue(handler.wasCalled());
+        vertx.runOnContext((h) -> {
+            Assert.assertTrue(resultCallback.succeeded());
+            Assert.assertEquals(1, resultCallback.getResult(), 0);
+            Assert.assertTrue(handler.wasCalled());
+            async.complete();
+        });
     }
 
     /**
@@ -161,7 +178,7 @@ public class GridFSInputStreamTest {
      */
     @Test
     public void testMultipleReadCallbacksShouldFail() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+        GridFSInputStream inputStream = GridFSInputStream.create(rule.vertx());
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
         ResultCallback<Integer> resultCallback1 = new ResultCallback<>();
@@ -181,7 +198,7 @@ public class GridFSInputStreamTest {
      */
     @Test
     public void testSetWriteQueue() {
-        GridFSInputStream inputStream = GridFSInputStream.create();
+        GridFSInputStream inputStream = GridFSInputStream.create(rule.vertx());
 
         inputStream.setWriteQueueMaxSize(2);
 

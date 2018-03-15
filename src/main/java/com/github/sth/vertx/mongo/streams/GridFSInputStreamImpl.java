@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
@@ -18,6 +19,7 @@ import io.vertx.core.streams.WriteStream;
  */
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
+    private final Vertx vertx;
     private int writeQueueMaxSize;
     private final CircularByteBuffer buffer;
     private Handler<Void> drainHandler;
@@ -28,14 +30,16 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     private List<Byte> inBytes = new ArrayList<>();
     private List<Byte> outBytes = new ArrayList<>();
 
-    public GridFSInputStreamImpl() {
+    public GridFSInputStreamImpl(final Vertx vertx) {
         buffer = new CircularByteBuffer(8192);
         writeQueueMaxSize = buffer.capacity();
+        this.vertx = vertx;
     }
 
-    public GridFSInputStreamImpl(final int queueSize) {
+    public GridFSInputStreamImpl(final Vertx vertx, final int queueSize) {
         buffer = new CircularByteBuffer(queueSize);
         writeQueueMaxSize = queueSize;
+        this.vertx = vertx;
     }
 
     public byte[] getInBytes() {
@@ -81,7 +85,8 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         c.onResult(bytesWritten, null);
         // if there is a drain handler and the buffer is less than half full, call the drain handler
         if (drainHandler != null && buffer.remaining() < writeQueueMaxSize / 2) {
-            drainHandler.handle(null);
+            final Handler<Void> handler = drainHandler;
+            vertx.runOnContext(v -> handler.handle(null));
             drainHandler = null;
         }
     }

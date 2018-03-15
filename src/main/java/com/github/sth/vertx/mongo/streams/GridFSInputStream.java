@@ -1,6 +1,7 @@
 package com.github.sth.vertx.mongo.streams;
 
 import com.mongodb.async.client.gridfs.AsyncInputStream;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
@@ -33,8 +34,8 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
      *
      * @return the stream
      */
-    static GridFSInputStream create() {
-        return new GridFSInputStreamImpl();
+    static GridFSInputStream create(Vertx vertx) {
+        return new GridFSInputStreamImpl(vertx);
     }
 
     /**
@@ -43,8 +44,8 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
      * @param queueSize the initial queue size
      * @return the stream
      */
-    static GridFSInputStream create(int queueSize) {
-        return new GridFSInputStreamImpl(queueSize);
+    static GridFSInputStream create(Vertx vertx, int queueSize) {
+        return new GridFSInputStreamImpl(vertx, queueSize);
     }
 
     public byte[] getInBytes();
