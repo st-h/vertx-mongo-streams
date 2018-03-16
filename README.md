@@ -19,13 +19,17 @@ mvn:
 ```
  <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
- <version>1.3.0</version>
+ <version>2.0.0</version>
 ```
  
 gradle:
 ```
-com.github.st-h:vertx-mongo-streams:1.3.0
+com.github.st-h:vertx-mongo-streams:2.0.0
 ```
+
+## Upgrading from 1.x
+
+The GridFSInputStream factory method `GridFSInputStream.create(vertx)` now requires the vertx instance as an argument. This is needed to ensure that the `drainHandler` of the vert.x `WriteStream` is called within the correct context. Please see [this blog post](http://vertx.io/blog/an-introduction-to-the-vert-x-context-object/) for details about the vert.x context.
 
 # Usage
 
@@ -68,7 +72,7 @@ public class UploadVerticle extends AbstractVerticle {
       request.uploadHandler(fileUpload -> {
 
         // create a GridFSInputStream
-        GridFSInputStream gridFSInputStream = GridFSInputStream.create();
+        GridFSInputStream gridFSInputStream = GridFSInputStream.create(vertx);
 
         // when the upload has finished, notify the GridFSInputStream
         fileUpload.endHandler(endHandler -> gridFSInputStream.end());
