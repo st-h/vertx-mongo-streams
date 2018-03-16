@@ -1,5 +1,6 @@
 package com.github.sth.vertx.mongo.streams.util;
 
+import com.github.sth.vertx.mongo.streams.util.CircularByteBuffer;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

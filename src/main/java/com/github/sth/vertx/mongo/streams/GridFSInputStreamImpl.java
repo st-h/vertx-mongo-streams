@@ -6,6 +6,7 @@ import com.mongodb.async.SingleResultCallback;
 import java.nio.ByteBuffer;
 
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.WriteStream;
 
@@ -16,6 +17,7 @@ import io.vertx.core.streams.WriteStream;
  */
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
+    private final Vertx vertx;
     private int writeQueueMaxSize;
     private final CircularByteBuffer buffer;
     private Handler<Void> drainHandler;
@@ -23,15 +25,19 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     private SingleResultCallback<Integer> pendingCallback;
     private ByteBuffer outputBuffer;
 
-    public GridFSInputStreamImpl() {
+
+    public GridFSInputStreamImpl(final Vertx vertx) {
         buffer = new CircularByteBuffer(8192);
         writeQueueMaxSize = buffer.capacity();
+        this.vertx = vertx;
     }
 
-    public GridFSInputStreamImpl(final int queueSize) {
+    public GridFSInputStreamImpl(final Vertx vertx, final int queueSize) {
         buffer = new CircularByteBuffer(queueSize);
         writeQueueMaxSize = queueSize;
+        this.vertx = vertx;
     }
+
 
     public void read(ByteBuffer b, SingleResultCallback<Integer> c) {
         synchronized (buffer) {
@@ -60,7 +66,8 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         c.onResult(bytesWritten, null);
         // if there is a drain handler and the buffer is less than half full, call the drain handler
         if (drainHandler != null && buffer.remaining() < writeQueueMaxSize / 2) {
-            drainHandler.handle(null);
+            final Handler<Void> handler = drainHandler;
+            vertx.runOnContext(v -> handler.handle(null));
             drainHandler = null;
         }
     }
@@ -69,6 +76,7 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     public WriteStream<Buffer> write(Buffer inputBuffer) {
         if (closed) throw new IllegalStateException("Stream is closed");
         final byte[] bytes = inputBuffer.getBytes();
+
         final ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         synchronized (buffer) {
             if (pendingCallback != null) {
