@@ -84,7 +84,6 @@ public class IntegrationTestVerticle extends AbstractVerticle {
                                 } else {
                                     JsonObject json = new JsonObject()
                                             .put("id", id.toString())
-                                            .put("vertxMd5", md5(gridFSInputStream.getInBytes()))
                                             .put("md5", file.getMD5());
                                     request.response().end(json.toString());
                                 }

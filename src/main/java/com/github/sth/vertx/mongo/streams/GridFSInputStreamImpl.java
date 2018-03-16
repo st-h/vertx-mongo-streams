@@ -4,8 +4,6 @@ import com.github.sth.vertx.mongo.streams.util.CircularByteBuffer;
 import com.mongodb.async.SingleResultCallback;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -27,8 +25,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     private SingleResultCallback<Integer> pendingCallback;
     private ByteBuffer outputBuffer;
 
-    private List<Byte> inBytes = new ArrayList<>();
-    private List<Byte> outBytes = new ArrayList<>();
 
     public GridFSInputStreamImpl(final Vertx vertx) {
         buffer = new CircularByteBuffer(8192);
@@ -42,21 +38,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         this.vertx = vertx;
     }
 
-    public byte[] getInBytes() {
-        byte[] bytes = new byte[inBytes.size()];
-        for (int i = 0; i < inBytes.size(); i++) {
-            bytes[i] = inBytes.get(i);
-        }
-        return bytes;
-    }
-
-    public byte[] getWrittenBytes() {
-        byte[] bytes = new byte[outBytes.size()];
-        for (int i = 0; i < outBytes.size(); i++) {
-            bytes[i] = outBytes.get(i);
-        }
-        return bytes;
-    }
 
     public void read(ByteBuffer b, SingleResultCallback<Integer> c) {
         synchronized (buffer) {
@@ -96,9 +77,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         if (closed) throw new IllegalStateException("Stream is closed");
         final byte[] bytes = inputBuffer.getBytes();
 
-        for (int i = 0; i < bytes.length; i++) {
-            inBytes.add(bytes[i]);
-        }
         final ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         synchronized (buffer) {
             if (pendingCallback != null) {

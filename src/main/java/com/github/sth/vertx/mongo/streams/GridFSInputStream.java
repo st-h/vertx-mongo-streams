@@ -48,7 +48,4 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
         return new GridFSInputStreamImpl(vertx, queueSize);
     }
 
-    public byte[] getInBytes();
-
-    public byte[] getWrittenBytes();
 }
