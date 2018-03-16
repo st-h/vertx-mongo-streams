@@ -96,7 +96,6 @@ public class GridFSInOutStreamIT {
                 serverMD5[0] = ((String) resp.get("md5")).toUpperCase();
                 context.assertNotNull(body);
 
-                context.assertEquals(((String) resp.get("md5")).toUpperCase(), resp.get("vertxMd5"), "received bytes are incorrect");
                 uploadAsync.complete();
             });
         }).setChunked(true);
