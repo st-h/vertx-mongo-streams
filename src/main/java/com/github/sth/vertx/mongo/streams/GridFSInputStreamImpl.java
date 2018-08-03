@@ -5,6 +5,7 @@ import com.mongodb.async.SingleResultCallback;
 
 import java.nio.ByteBuffer;
 
+import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -18,6 +19,7 @@ import io.vertx.core.streams.WriteStream;
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
     private final Vertx vertx;
+    private final Context context;
     private int writeQueueMaxSize;
     private final CircularByteBuffer buffer;
     private Handler<Void> drainHandler;
@@ -30,12 +32,14 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         buffer = new CircularByteBuffer(8192);
         writeQueueMaxSize = buffer.capacity();
         this.vertx = vertx;
+        this.context = vertx.getOrCreateContext();
     }
 
     public GridFSInputStreamImpl(final Vertx vertx, final int queueSize) {
         buffer = new CircularByteBuffer(queueSize);
         writeQueueMaxSize = queueSize;
         this.vertx = vertx;
+        this.context = vertx.getOrCreateContext();
     }
 
 
@@ -67,11 +71,10 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         // if there is a drain handler and the buffer is less than half full, call the drain handler
         if (drainHandler != null && buffer.remaining() < writeQueueMaxSize / 2) {
             final Handler<Void> handler = drainHandler;
-            vertx.runOnContext(v -> handler.handle(null));
+            context.runOnContext(v -> handler.handle(null));
             drainHandler = null;
         }
     }
-
 
     public WriteStream<Buffer> write(Buffer inputBuffer) {
         if (closed) throw new IllegalStateException("Stream is closed");
@@ -105,7 +108,6 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
         }
         return bytesWritten;
     }
-
 
     private void doCallback(final int bytesWritten) {
         SingleResultCallback<Integer> c = pendingCallback;
