@@ -32,6 +32,7 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
     /**
      * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
      *
+     * @param vertx the vertx instance
      * @return the stream
      */
     static GridFSInputStream create(Vertx vertx) {
@@ -41,6 +42,7 @@ public interface GridFSInputStream extends AsyncInputStream, WriteStream<Buffer>
     /**
      * Create a {@link com.github.sth.vertx.mongo.streams.GridFSInputStream}.
      *
+     * @param vertx the vertx instance
      * @param queueSize the initial queue size
      * @return the stream
      */
