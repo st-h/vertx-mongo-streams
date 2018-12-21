@@ -18,7 +18,6 @@ import io.vertx.core.streams.WriteStream;
  */
 public class GridFSInputStreamImpl implements GridFSInputStream {
 
-    private final Vertx vertx;
     private final Context context;
     private int writeQueueMaxSize;
     private final CircularByteBuffer buffer;
@@ -31,14 +30,12 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
     public GridFSInputStreamImpl(final Vertx vertx) {
         buffer = new CircularByteBuffer(8192);
         writeQueueMaxSize = buffer.capacity();
-        this.vertx = vertx;
         this.context = vertx.getOrCreateContext();
     }
 
     public GridFSInputStreamImpl(final Vertx vertx, final int queueSize) {
         buffer = new CircularByteBuffer(queueSize);
         writeQueueMaxSize = queueSize;
-        this.vertx = vertx;
         this.context = vertx.getOrCreateContext();
     }
 
@@ -52,6 +49,11 @@ public class GridFSInputStreamImpl implements GridFSInputStream {
                 doCallback(b, c);
             }
         }
+    }
+
+    @Override
+    public void skip(long bytesToSkip, SingleResultCallback<Long> callback) {
+        throw new UnsupportedOperationException();
     }
 
     private void storeCallback(final ByteBuffer b, final SingleResultCallback<Integer> c) {
