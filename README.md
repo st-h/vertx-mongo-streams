@@ -11,7 +11,7 @@ Pull Requests are welcome.
 
 # Prerequisites
 - Java 8
-- mongodb async driver >= 3.3.0
+- mongodb async driver >= 3.10.0
 - vert.x >= 3.4.0
 
 # Install
@@ -19,12 +19,12 @@ mvn:
 ```
  <groupId>com.github.st-h</groupId>
  <artifactId>vertx-mongo-streams</artifactId>
- <version>2.0.1</version>
+ <version>2.1.0</version>
 ```
  
 gradle:
 ```
-com.github.st-h:vertx-mongo-streams:2.0.1
+com.github.st-h:vertx-mongo-streams:2.1.0
 ```
 
 ## Upgrading from 1.x
