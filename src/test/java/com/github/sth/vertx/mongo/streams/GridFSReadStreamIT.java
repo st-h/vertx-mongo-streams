@@ -2,6 +2,7 @@ package com.github.sth.vertx.mongo.streams;
 
 import com.github.sth.vertx.mongo.streams.util.ByteUtil;
 import com.github.sth.vertx.mongo.streams.util.IntegrationTestVerticle;
+import com.github.sth.vertx.mongo.streams.util.ReadStreamIntegrationTestVerticle;
 import com.github.sth.vertx.mongo.streams.util.UploadHelper;
 import com.mongodb.async.client.MongoClients;
 import io.vertx.core.AsyncResult;
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 @RunWith(VertxUnitRunner.class)
-public class GridFSInOutStreamIT {
+public class GridFSReadStreamIT {
 
     Vertx vertx;
     int port;
@@ -33,7 +34,7 @@ public class GridFSInOutStreamIT {
         socket.close();
 
         DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-        vertx.deployVerticle(IntegrationTestVerticle.class.getName(), options, context.asyncAssertSuccess());
+        vertx.deployVerticle(ReadStreamIntegrationTestVerticle.class.getName(), options, context.asyncAssertSuccess());
     }
 
     @After
@@ -51,6 +52,18 @@ public class GridFSInOutStreamIT {
     public void testUploadAndDownload(TestContext context) {
         byte[] bytes = ByteUtil.randomBytes(1024 * 1024);
         UploadHelper.uploadDownload(vertx, port, context, bytes);
+    }
+
+    @Test
+    public void testUploadAndGetRange(TestContext context) {
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 );
+        UploadHelper.uploadDownload(vertx, port, context, bytes, 711L, 4211L);
+    }
+
+    @Test
+    public void testUploadAndGetRangeOffset(TestContext context) {
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 );
+        UploadHelper.uploadDownload(vertx, port, context, bytes, 2477L, null);
     }
 
     @Test

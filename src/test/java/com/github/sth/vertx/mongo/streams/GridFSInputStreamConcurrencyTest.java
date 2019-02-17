@@ -48,7 +48,7 @@ public class GridFSInputStreamConcurrencyTest {
         }
 
         for (int i = 0; i < BUFFER_COUNT; i++) {
-            Assert.assertTrue(Arrays.equals(buffers.get(i).getBytes(), Arrays.copyOfRange(byteBuffer.array(), i * BUFFER_SIZE, (i + 1) * BUFFER_SIZE)));
+            Assert.assertArrayEquals(buffers.get(i).getBytes(), Arrays.copyOfRange(byteBuffer.array(), i * BUFFER_SIZE, (i + 1) * BUFFER_SIZE));
         }
     }
 
