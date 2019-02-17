@@ -55,7 +55,7 @@ public class GridFSInOutStreamIT {
 
     @Test
     public void testUploadAndDownloadLarge(TestContext context) {
-        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 21);
+        byte[] bytes = ByteUtil.randomBytes(1024 * 1024 * 17);
         UploadHelper.uploadDownload(vertx, port, context, bytes);
     }
 }
