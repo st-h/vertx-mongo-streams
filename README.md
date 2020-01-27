@@ -5,7 +5,12 @@
 # GridFS stream helper for Vert.x 3.x and MongoDB async driver in Java and Groovy
 Helpers to stream data between vert.x ReadStream (e.g. HttpServerFileUpload), WriteStream (e.g. HttpServerResponse) and MongoDB AsyncInputStream and AsyncOutputStream.
 
-Pull Requests are welcome.
+---
+
+# Important
+This library is no longer maintained and will not receive any updates because of the following reasons:
+- the mongodb driver will remove support for callback style invocations
+- we no longer use GridFS to store binary data
 
 ---
 
